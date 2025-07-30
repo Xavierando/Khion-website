@@ -65,7 +65,8 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "start:dev": "vue-cli-service build --mode=development"
     },
     "extra": {
         "laravel": {
