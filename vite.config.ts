@@ -3,9 +3,13 @@ import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import path from 'path';
+import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
     plugins: [
+        VueDevTools({
+            appendTo: 'resources/js/app.js'
+        }),
         laravel({
             input: ['resources/js/app.ts'],
             ssr: 'resources/js/ssr.ts',
