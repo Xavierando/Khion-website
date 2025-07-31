@@ -105,17 +105,19 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { computed } from 'vue';
 
 import { usePage, useForm } from '@inertiajs/vue3';
 const page = usePage();
-const form = useForm();
+const form = useForm({
+
+});
 
 const submit = () => {
-    form.post(route('logout'));
+    form.post(route('logout'), {onFinish: () =>{}});
 };
 
 const user = page.props.auth.user;
