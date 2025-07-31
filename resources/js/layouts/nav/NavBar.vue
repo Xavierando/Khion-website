@@ -108,7 +108,7 @@
 <script setup lang="ts">
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import { computed } from 'vue';
+import { computed,reactive } from 'vue';
 
 import { usePage, useForm } from '@inertiajs/vue3';
 const page = usePage();
@@ -120,16 +120,16 @@ const submit = () => {
     form.post(route('logout'), {onFinish: () =>{}});
 };
 
-const user = page.props.auth.user;
+const user = computed(() => page.props.auth.user);
 
 
-const navigation = [
+const navigation = reactive([
     { name: 'Home', href: route('home'), current: true, visible: true },
     { name: 'Shop', href: '#', current: false, visible: true },
     { name: 'Articles', href: '#', current: false, visible: true },
-    { name: 'Reports', href: '#', current: false, visible: page.props.auth.user?.isTeam ?? false },
-    { name: 'Login', href: route('login'), current: false, visible: !page.props.auth.user }
-]
+    { name: 'Reports', href: '#', current: false, visible: computed(() => page.props.auth.user?.isTeam ?? false) },
+    { name: 'Login', href: route('login'), current: false, visible: computed(() => !page.props.auth.user) }
+])
 
 const visibleNavigation = computed(() => navigation.filter((i) => i.visible))
 
