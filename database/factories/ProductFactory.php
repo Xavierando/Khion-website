@@ -18,9 +18,9 @@ class ProductFactory extends Factory
     {
         return [
             'code' => fake()->word(),
-            'name' => array_reduce(fake()->words(2) , fn ($c,$i) => $c. ' '.$i),
+            'name' => array_reduce(fake()->words(2), fn ($c, $i) => $c.' '.$i),
             'description' => fake()->text(600),
-            'base_price' => fake()->numberBetween(100,900),
+            'base_price' => fake()->numberBetween(100, 900),
         ];
     }
 }

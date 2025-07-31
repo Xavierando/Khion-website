@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('isAdmin')->default(false);
             $table->boolean('isTeam')->default(false);
+            $table->string('imageUrl')->nullable();
             $table->string('role')->nullable();
             $table->text('bio')->nullable();
             $table->rememberToken();
