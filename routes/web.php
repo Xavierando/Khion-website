@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('home');
+Route::get('/', [HomePageController::class, 'index'])->name('home');
+
+Route::resource('products', ProductController::class);
+Route::put('user', [UserController::class, 'update']);
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
