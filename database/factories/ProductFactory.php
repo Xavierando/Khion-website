@@ -21,6 +21,8 @@ class ProductFactory extends Factory
             'name' => array_reduce(fake()->words(2), fn ($c, $i) => $c.' '.$i),
             'description' => fake()->text(600),
             'base_price' => fake()->numberBetween(100, 900),
+            'imageUrl' => 'snowboard1.png',
+            'configuration' => '{"options":[{"type":"select","name":"size","options":[{"name":"150 cm","price":-20},{"name":"160 cm","price":0},{"name":"170 cm","price":20}]},{"type":"select","name":"hardness","options":[{"name":"flexible","price":-20},{"name":"normal","price":0},{"name":"stiff","price":20}]}]}',
         ];
     }
 }

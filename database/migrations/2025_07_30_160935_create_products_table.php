@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->text('description');
             $table->integer('base_price');
+            $table->string('imageUrl')->nullable();
+            $table->json('configuration');
             $table->timestamps();
         });
     }

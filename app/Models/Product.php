@@ -12,6 +12,10 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
 
+    protected $casts = [
+        'configuration' => 'array',
+    ];
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
