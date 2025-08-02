@@ -9,9 +9,10 @@ const props = defineProps<{
 
 <template>
   <p
+    v-if="$slots.description"
     data-slot="card-description"
     :class="cn('text-muted-foreground text-sm', props.class)"
   >
-    <slot />
+    <slot name="description"/>
   </p>
 </template>
