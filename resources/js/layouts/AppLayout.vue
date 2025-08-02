@@ -13,12 +13,10 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <div>
-        <NavBar />
-        <main>
-            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <slot />
-            </div>
+    <div class="relative h-screen w-screen">
+        <NavBar class="absolute top-0 w-full z-10" />
+        <main class="mx-auto h-screen overflow-scroll">
+            <slot />
         </main>
     </div>
 </template>

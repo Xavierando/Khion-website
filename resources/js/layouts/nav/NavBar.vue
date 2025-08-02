@@ -7,7 +7,7 @@
     <body class="h-full">
     ```
   -->
-    <div class="min-h-full">
+    <header class="">
         <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between">
@@ -38,7 +38,7 @@
                                     class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800">
                                     <span class="absolute -inset-1.5" />
                                     <span class="sr-only">Open user menu</span>
-                                    <img class="size-8 rounded-full" :src="user?.imageUrl" alt="" />
+                                    <img class="size-8 rounded-full" :src="'/images/'+user?.imageUrl" alt="" />
                                 </MenuButton>
 
                                 <transition enter-active-class="transition ease-out duration-100"
@@ -81,7 +81,7 @@
                 <div class="border-t border-gray-700 pt-4 pb-3">
                     <div class="flex items-center px-5" v-if="user">
                         <div class="shrink-0">
-                            <img class="size-10 rounded-full" :src="user?.imageUrl" alt="" />
+                            <img class="size-10 rounded-full" :src="'/images/'+user?.imageUrl" alt="" />
                         </div>
                         <div class="ml-3">
                             <div class="text-base/5 font-medium text-white">{{ user?.name }}</div>
@@ -102,7 +102,7 @@
                 </div>
             </DisclosurePanel>
         </Disclosure>
-    </div>
+    </header>
 </template>
 
 <script setup lang="ts">
@@ -125,7 +125,7 @@ const user = computed(() => page.props.auth.user);
 
 const navigation = reactive([
     { name: 'Home', href: route('home'), current: true, visible: true },
-    { name: 'Shop', href: '#', current: false, visible: true },
+    { name: 'Shop', href: route('products.index'), current: false, visible: true },
     { name: 'Articles', href: '#', current: false, visible: true },
     { name: 'Reports', href: '#', current: false, visible: computed(() => page.props.auth.user?.isTeam ?? false) },
     { name: 'Login', href: route('login'), current: false, visible: computed(() => !page.props.auth.user) }
@@ -134,8 +134,7 @@ const navigation = reactive([
 const visibleNavigation = computed(() => navigation.filter((i) => i.visible))
 
 const userNavigation = [
-    { name: 'Your Profile', href: '#', event:'' },
-    { name: 'Settings', href: '#', event:''},
+    { name: 'Settings', href: route('dashboard'), event:''},
     { name: 'Sign out', href: '#', event:submit},
 ]
 </script>
