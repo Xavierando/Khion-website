@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -13,7 +15,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = ProductResource::collection(Product::all());
+
+        return Inertia::render('Products/index', ['products' => $products]);
     }
 
     /**
@@ -37,7 +41,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return Inertia::render('Products/show', ['product' => ProductResource::make($product)]);
     }
 
     /**
