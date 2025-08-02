@@ -32,15 +32,15 @@ class DatabaseSeeder extends Seeder
             'role' => 'Supporto Informatico',
         ]);
 
-        User::factory(10)->create();
+        // User::factory(10)->create();
 
         Product::factory(5)
             ->has(Tag::factory())
-            ->has(Comment::factory(5))
+            ->has(Comment::factory(1))
             ->create();
 
         $tags = Tag::all();
-        Post::factory(8)
+        Post::factory(2)
             ->recycle($tags)
             ->create();
     }
