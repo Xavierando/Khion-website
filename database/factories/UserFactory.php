@@ -3,7 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -23,17 +26,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->name();
+        $response = Http::get('https://xsgames.co/randomusers/avatar.php?g=male');
+        $path = 'pic/'.Str::random(10).'.png';
+        Storage::disk('images')->put($path, $response->body());
 
         return [
-            'name' => $name,
+            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'isAdmin' => false,
             'isTeam' => false,
-            'imageUrl' => 'https://placehold.co/60x60/orange/white?text='.substr($name, 0, 2),
+            'imageUrl' => $path,
         ];
     }
 
