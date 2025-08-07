@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('base_price');
             $table->string('imageUrl')->nullable();
             $table->json('configuration');
+            $table->string('stripe_price_id')->nullable();
             $table->timestamps();
         });
     }
