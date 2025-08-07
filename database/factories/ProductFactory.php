@@ -16,13 +16,17 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+
+        $json = json_decode('{"options":[{"type":"select","name":"size","options":[{"name":"150 cm","price":0},{"name":"160 cm","price":0},{"name":"170 cm","price":0}]},{"type":"select","name":"hardness","options":[{"name":"flexible","price":0},{"name":"normal","price":0},{"name":"stiff","price":0}]}]}');
+
         return [
             'code' => fake()->word(),
             'name' => array_reduce(fake()->words(2), fn ($c, $i) => $c.' '.$i),
             'description' => fake()->text(600),
             'base_price' => fake()->numberBetween(100, 900),
             'imageUrl' => 'snowboard1.png',
-            'configuration' => '{"options":[{"type":"select","name":"size","options":[{"name":"150 cm","price":-20},{"name":"160 cm","price":0},{"name":"170 cm","price":20}]},{"type":"select","name":"hardness","options":[{"name":"flexible","price":-20},{"name":"normal","price":0},{"name":"stiff","price":20}]}]}',
+            'configuration' => $json,
+            'stripe_price_id' => 'price_1Rt5ZiRxtEVoFjKik3t2Ugrx',
         ];
     }
 }
