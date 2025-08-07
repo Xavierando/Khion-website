@@ -2,10 +2,11 @@
 import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { Product,User } from '@/types';
 
 const props = defineProps<{
-    teams?: Array<Object>,
-    products?: Array<Object>,
+    teams?: Array<User>,
+    products?: Array<Product>,
 }>()
 </script>
 

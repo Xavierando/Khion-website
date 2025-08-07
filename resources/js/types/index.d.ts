@@ -36,7 +36,52 @@ export interface User {
     isAdmin: boolean;
     isTeam: boolean;
     bio: string;
+    url: string;
     imageUrl: string;
+    role: string;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+export interface ConfOption {
+    name: string,
+    price: integer
+}
+
+export interface Productconfiguration {
+    options:
+    [
+        {
+            name: string;
+            options:
+            [
+                ConfOption
+            ];
+            ref: string;
+            type: string;
+        }
+    ]
+}
+
+export interface Product {
+    id: number;
+    type: string;
+    name: string;
+    code: string;
+    description: string;
+    base_price: string;
+    imageUrl: string;
+    short: string;
+    link: string;
+    configuration: Productconfiguration;
+}
+
+export interface Cart {
+    list: [
+        {
+            quantity: integer;
+            product: Product;
+            config: ConfOption;
+        }
+    ]
+}
