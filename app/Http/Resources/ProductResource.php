@@ -24,7 +24,7 @@ class ProductResource extends JsonResource
             'imageUrl' => '/images/'.$this->imageUrl,
             'short' => str($this->description)->words(20, '...'),
             'link' => '/products/'.$this->id,
-            'configuration' => $this->configuration
+            'configuration' => $this->configuration,
         ];
     }
 }
