@@ -19,7 +19,7 @@
                     product.name }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <img class="w-full h-full" :src="product.imageUrl"></img>
+                        <img class="w-full h-full" :src="product.imageUrl" />
                     </div>
                     <div>
                         <div>{{ product.description }}</div>
