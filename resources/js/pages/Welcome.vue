@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { Product,User } from '@/types';
 
 const props = defineProps<{
@@ -80,7 +80,7 @@ const props = defineProps<{
                 <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">I nostri
                     prodotti</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card v-for="product in products" :product="product">
+                    <Card v-for="product in products" :product="product" :key="product.id">
                     </Card>
                 </div>
             </div>
@@ -95,7 +95,7 @@ const props = defineProps<{
                     </div>
                     <ul role="list"
                         class="mx-auto mt-20 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 sm:grid-cols-2 lg:max-w-4xl xl:max-w-none">
-                        <li v-for="team in props.teams" class="flex flex-col items-start gap-x-10 gap-y-6 xl:flex-row">
+                        <li v-for="team in props.teams" :key="team.id" class="flex flex-col items-start gap-x-10 gap-y-6 xl:flex-row">
                             <div class="flex-none">
                                 <div class="relative aspect-square w-56 overflow-hidden rounded-full bg-gray-200">
                                     <span aria-hidden="true"

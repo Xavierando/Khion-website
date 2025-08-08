@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import NavBar from './nav/NavBar.vue';
 

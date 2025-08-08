@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import Input from '@/components/ui/input/Input.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -44,7 +43,7 @@ function onDrop(files: File[] | null) {
     }
 }
 
-const { isOverDropZone } = useDropZone(dropZonePic, {
+useDropZone(dropZonePic, {
     onDrop,
     dataTypes: ['image/jpeg', 'image/png'],
     preventDefaultForUnhandled: false,

@@ -120,7 +120,7 @@
 <script setup lang="ts">
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import { computed, reactive, inject } from 'vue';
+import { computed, reactive } from 'vue';
 
 import { usePage, useForm } from '@inertiajs/vue3';
 const page = usePage();

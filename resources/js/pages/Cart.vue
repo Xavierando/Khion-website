@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { Product, User } from '@/types';
+import { Head, useForm } from '@inertiajs/vue3';
 import { computed, inject } from 'vue';
 
-
-const props = defineProps<{
-    teams?: Array<User>,
-    products?: Array<Product>,
-}>()
 
 const globalCart = inject('globalCart');
 
@@ -42,7 +35,7 @@ function submitAcquista (){
                 <section class="h-16">
                 </section>
 
-                <section v-for="item in globalCart.list" class="">
+                <section v-for="item in globalCart.list" :key="item.id" class="">
                     <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
                         <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">{{
                             item.name }}</h2>
@@ -55,7 +48,7 @@ function submitAcquista (){
 
                                 <div class="my-2 grid grid-cols-1 relative p-3">
                                     <h2 class="text-xl">Configurations</h2>
-                                    <div v-for="opt in item.options"
+                                    <div v-for="opt in item.options" :key="opt.name"
                                         class="grid grid-cols-2 group w-fit items-center text-lg gap-2">
                                         <div>{{ opt.name }}</div>
                                         <div class="font-bold">

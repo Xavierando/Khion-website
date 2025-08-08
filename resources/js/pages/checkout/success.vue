@@ -24,7 +24,7 @@
                                     d="M5 13l4 4L19 7"></path>
                             </svg>
                             <h3 class="mt-4 text-lg font-medium text-gray-900">Thank you for your purchase!</h3>
-                            <p class="mt-1 text-sm text-gray-600">Your order with id {{ order }} has been successfully processed.</p>
+                            <p class="mt-1 text-sm text-gray-600">Your order with id {{ props.order }} has been successfully processed.</p>
                             <div class="mt-5">
                                 <a href="/"
                                     class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">

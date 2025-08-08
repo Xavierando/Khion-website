@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { Product,User } from '@/types';
+import { Head } from '@inertiajs/vue3';
+import { Product } from '@/types';
 
 const props = defineProps<{
-  teams?: Array<User>,
   products?: Array<Product>,
 }>()
 </script>
@@ -26,7 +25,7 @@ const props = defineProps<{
                 <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">I nostri
                     prodotti</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card v-for="product in products" :product="product">
+                    <Card v-for="product in props.products" :product="product" :key="product.id">
                     </Card>
                 </div>
             </div>

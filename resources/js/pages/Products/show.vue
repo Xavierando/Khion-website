@@ -26,13 +26,13 @@
 
                         <div class="my-2 grid grid-cols-1 relative p-3">
                             <h2 class="text-xl">Configurations</h2>
-                            <div v-for="item in product.configuration.options"
+                            <div v-for="item in product.configuration.options" :key="item.name"
                                 class="grid grid-cols-2 group w-fit items-center text-lg">
                                 <div>{{ item.name }}</div>
                                 <div>
                                     <select @change="event => { item.ref = event.target?.value; updatePrice() }"
                                         class="cursor-pointer p-2">
-                                        <option v-for="option of item.options" :value="option.name"
+                                        <option v-for="option of item.options" :value="option.name" :key="option.name"
                                             :selected="option.name === item.ref">{{ option.name }}
                                         </option>
                                     </select>
@@ -59,9 +59,8 @@
 </template>
 
 <script setup lang="ts">
-import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref,inject } from 'vue';
 import { Product, ConfOption } from '@/types';
 import { useCookies } from '@vueuse/integrations/useCookies';
