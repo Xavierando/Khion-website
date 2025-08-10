@@ -8,6 +8,7 @@ const props = defineProps<{
     teams?: Array<User>,
     products?: Array<Product>,
 }>()
+
 </script>
 
 <template>
@@ -17,15 +18,17 @@ const props = defineProps<{
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <AppLayout>
+        <Transition appear>
         <section
-            class="h-screen bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
+            class="h-screen bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative transition duration-600" >
             <div class="mx-auto h-full grid place-items-center">
                 <div class="lg:min-w-md p-12 bg-white/20 rounded-lg">
                     <h1 class="text-7xl text-black font-bold">KHION</h1>
-                    <p class="text-black ml-5 font-bold">BEST SNOW EVER</p>
+                    <p class="text-black ml-5 font-bold">ALPINE SNOWBOARD</p>
                 </div>
             </div>
         </section>
+        </Transition>
 
         <section>
             <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black  py-24">

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -45,6 +46,11 @@ class UserController extends Controller
             $user->update(['imageUrl' => $path]);
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.user.edit');
+    }
+
+    public function edit(Request $request)
+    {
+        return Inertia::render('dashboard/user/edit');
     }
 }

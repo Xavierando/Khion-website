@@ -1,24 +1,53 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import { Product } from '@/types';
+import { TrashIcon } from '@heroicons/vue/24/outline';
 import { Head, useForm } from '@inertiajs/vue3';
-import { computed, inject } from 'vue';
+import { useCookies } from '@vueuse/integrations/useCookies.mjs';
+import { computed, inject, reactive, ref } from 'vue';
 
+const props = defineProps<{
+    products?: Array<Product>,
+}>()
+const cookies = useCookies();
 
 const globalCart = inject('globalCart');
 
-console.log(globalCart)
+const totalPrice = computed(() => globalCart.value.list?.reduce((a, v) => a + v.price, 0) ?? 0);
 
-const totalPrice = computed( () => globalCart.value.list?.reduce((a,v) => a + v.price,0) ?? 0)
+const cart = computed(() => {
+    return globalCart.value.list.map((v) => {
+        const product: Product = findProduct(v.id);
+        return {
+            'cid': v.cid,
+            'id': v.id,
+            'description': product.description,
+            'price': product.base_price,
+            'imageUrl': product.imageUrl,
+            'name': product.name,
+            'options':v.options
+        }
+    })
+})
 
 const formAcquisto = useForm({
     products: []
 })
 
-function submitAcquista (){
+function submitAcquista() {
     formAcquisto.products = globalCart.value.list;
     formAcquisto.post('/checkout');
 }
 
+function findProduct(id: number): Product {
+    return props.products.filter((v) => v.id === id)[0]
+}
+
+function DeleteCartItem(cid: number) {
+    globalCart.value.list = globalCart.value.list.filter((v) => v.cid !== cid);
+    cookies.set('cart', globalCart.value, { path: '/' });
+}
+const voidCart = computed(() => cart.value.length === 0)
 </script>
 
 <template>
@@ -35,32 +64,58 @@ function submitAcquista (){
                 <section class="h-16">
                 </section>
 
-                <section v-for="item in globalCart.list" :key="item.id" class="">
-                    <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
-                        <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">{{
-                            item.name }}</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <img class="w-full h-full" :src="item.imageUrl" />
-                            </div>
-                            <div>
-                                <div>{{ item.description }}</div>
+                <section v-for="item in cart" :key="item.id" class="">
+                    <Transition appear>
+                        <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
+                            <h3
+                                class="text-xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">
+                                {{ item.name }}
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <img class="w-full h-full" :src="item.imageUrl" />
+                                </div>
+                                <div>
+                                    <div>{{ item.description }}</div>
 
-                                <div class="my-2 grid grid-cols-1 relative p-3">
-                                    <h2 class="text-xl">Configurations</h2>
-                                    <div v-for="opt in item.options" :key="opt.name"
-                                        class="grid grid-cols-2 group w-fit items-center text-lg gap-2">
-                                        <div>{{ opt.name }}</div>
-                                        <div class="font-bold">
-                                            {{ opt.option }}
+                                    <div class="my-2 grid grid-cols-2 relative p-3">
+                                        <h2 class="text-xl">Configurazione</h2>
+                                        <div v-for="opt in item.options" :key="opt.name"
+                                            class="col-span-2 grid grid-cols-subgrid group w-fit items-center text-lg gap-2">
+                                            <div>{{ opt.name }}</div>
+                                            <div class="font-bold">
+                                                {{ opt.option }}
+                                            </div>
+
                                         </div>
-
+                                    </div>
+                                    <div class="flex flex-row-reverse  items-center ">
+                                        <div class="bg-red-600/50 hover:bg-red-600 p-1 rounded-full ml-2" @click="DeleteCartItem(item.cid)">
+                                            <TrashIcon class="size-6" aria-hidden="true" />
+                                        </div>
+                                        <div class="text-lg text-black flex">
+                                            <div class="text-xl font-bold px-1">{{ item.price }}</div> &euro;
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="flex flex-row-reverse  items-center ">
-                                    <div class="text-lg text-black flex">
-                                        <div  class="text-xl font-bold px-1">{{ item.price }}</div> &euro;
-                                    </div>
+                            </div>
+                        </div>
+                    </Transition>
+                </section>
+
+                <section class="top-16 h-16" v-if="voidCart">
+                    <div class="w-screen">
+                        <div
+                            class="lg:max-w-6xl md:p-1 mx-auto bg-white/20 rounded-lg text-black flex flex-row-reverse">
+                            <div class="text-centered px-6 md:py-2 text-lg text-bold mx-auto items-center">
+                                <div class="ml-5">
+                                    Il tuo carrello é vuoto
+                                    <a :href="route('products.index')">
+                                        <button @click="submitAcquista()"
+                                            class="rounded-lg bg-blue-600/20 px-2 text-xl font-bold hover:bg-blue-600/50 cursor-pointer ml-2">
+                                            Torna allo shop
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -68,26 +123,28 @@ function submitAcquista (){
                 </section>
 
             </div>
-            <section class="absolute top-16 h-16">
-                <div class="w-screen">
-                    <div class="lg:max-w-6xl md:p-1 mx-auto bg-white/20 rounded-lg text-black flex flex-row-reverse">
+            <Transition appear>
+                <section class="absolute top-16 h-16" v-if="!voidCart">
+                    <div class="w-screen">
                         <div
-                            class="md:rounded-xl bg-gray-200 transiction-bg duration-600  px-6 md:py-2 text-lg text-bold md:w-auto w-full flex flex-row-reverse items-center text-right">
-                            <div class="ml-5">
-                                <button
-                                    @click="submitAcquista()"
-                                    class="rounded-lg bg-blue-600/20 p-3 text-xl font-bold hover:bg-blue-600/50 cursor-pointer">
-                                    Acquista
-                                </button>
-                            </div>
-                            <div class="flex flex-row  items-center">
-                                <div class="text-xl font-bold px-1">{{ totalPrice }}</div>
-                                <div class=" item-center">&euro;</div>
+                            class="lg:max-w-6xl md:p-1 mx-auto bg-white/20 rounded-lg text-black flex flex-row-reverse">
+                            <div
+                                class="md:rounded-xl bg-gray-200 transiction-bg duration-600  px-6 md:py-2 text-lg text-bold md:w-auto w-full flex flex-row-reverse items-center text-right">
+                                <div class="ml-5">
+                                    <button @click="submitAcquista()"
+                                        class="rounded-lg bg-blue-600/20 p-3 text-xl font-bold hover:bg-blue-600/50 cursor-pointer">
+                                        Acquista
+                                    </button>
+                                </div>
+                                <div class="flex flex-row  items-center">
+                                    <div class="text-xl font-bold px-1">{{ totalPrice }}</div>
+                                    <div class=" item-center">&euro;</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </Transition>
 
         </div>
     </AppLayout>

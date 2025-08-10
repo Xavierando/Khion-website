@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/vue3';
 import { Product } from '@/types';
 
 const props = defineProps<{
-  products?: Array<Product>,
+    products?: Array<Product>,
 }>()
 </script>
 
@@ -16,20 +16,25 @@ const props = defineProps<{
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <AppLayout>
-        <section
-            class="h-1/5 bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
-        </section>
+        <Transition appear>
+            <section
+                class="h-1/5 bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
+            </section>
+        </Transition>
 
-        <section>
-            <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
-                <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">I nostri
-                    prodotti</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card v-for="product in props.products" :product="product" :key="product.id">
-                    </Card>
+        <Transition appear>
+            <section>
+                <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
+                    <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">I
+                        nostri
+                        prodotti</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card v-for="product in props.products" :product="product" :key="product.id">
+                        </Card>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </Transition>
 
     </AppLayout>
 </template>

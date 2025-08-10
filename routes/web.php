@@ -2,8 +2,10 @@
 
 use App\Enums\OrderStatus;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Resources\ProductResource;
 use App\Models\Order;
 use App\Models\Order_item;
 use App\Models\Product;
@@ -14,21 +16,24 @@ use Inertia\Inertia;
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 
 Route::resource('products', ProductController::class);
-Route::put('user', [UserController::class, 'update']);
 Route::get('/cart', function () {
-    return Inertia::render('Cart');
-})->name('cart');
+    return Inertia::render('Cart', [
+        'products' => ProductResource::collection(Product::all()),
+    ]);
+})->middleware(['auth', 'verified'])->name('cart');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::put('/dashboard/user', [UserController::class, 'update'])->name('dashboard.user.update');
+    Route::get('/dashboard/user', [UserController::class, 'edit'])->name('dashboard.user.edit');
+    Route::get('/dashboard', function () {
+        return redirect('/dashboard/user');
+    })->name('dashboard');
+
+    Route::get('/dashboard/order', [OrderController::class, 'index'])->name('dashboard.order.index');
+});
 
 Route::post('/checkout', function (Request $request) {
-    $stripePriceId = 'price_1Rt5ZiRxtEVoFjKik3t2Ugrx';
-
     $products = $request->input('products');
-
-    $orders = array_map(fn ($i) => Product::find($i['id'])->stripe_price_id, $products);
 
     $order = Order::create([
         'status' => OrderStatus::pending,
@@ -37,8 +42,10 @@ Route::post('/checkout', function (Request $request) {
     ]);
 
     $checkout = [];
+    $total = 0;
     foreach ($products as $product) {
         $stripe_price_id = Product::find($product['id'])->stripe_price_id;
+        $total += $product['price'];
         Order_item::create([
             'order_id' => $order->id,
             'product_id' => $product['id'],
@@ -53,12 +60,14 @@ Route::post('/checkout', function (Request $request) {
             $checkout[$stripe_price_id] = 1;
         }
     }
+    $order->total = $total;
+    $order->save();
 
     return Inertia::location($request->user()->checkout($checkout, [
         'success_url' => route('checkout-success').'?session_id={CHECKOUT_SESSION_ID}&order='.$order->id,
         'cancel_url' => route('checkout-cancel'),
     ])->url);
-})->name('checkout');
+})->middleware(['auth', 'verified'])->name('checkout');
 
 Route::get('/checkout/success', function (Request $request) {
     $request->input('session_id');
@@ -75,8 +84,9 @@ Route::get('/checkout/success', function (Request $request) {
     return Inertia::render('checkout/success', [
         'order' => $matches[1][0],
     ]);
-})->name('checkout-success');
-Route::view('/checkout/cancel', 'checkout/cancel')->name('checkout-cancel');
-
+})->middleware(['auth', 'verified'])->name('checkout-success');
+Route::get('/checkout/cancel', function () {
+    return redirect('/cart');
+})->middleware(['auth', 'verified'])->name('checkout-cancel');
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
