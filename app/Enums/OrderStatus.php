@@ -2,11 +2,19 @@
 
 namespace App\Enums;
 
-enum OrderStatus
+use JsonSerializable;
+
+enum OrderStatus: string implements JsonSerializable
 {
-    case pending;
-    case unpaid;
-    case paid;
-    case production;
-    case expedited;
+    case Pending = 'Pending';
+    case pending = 'pending';
+    case unpaid = 'unpaid';
+    case paid = 'paid';
+    case production = 'production';
+    case expedited = 'expedited';
+
+    public function jsonSerialize(): string
+    {
+        return $this->value;
+    }
 }
