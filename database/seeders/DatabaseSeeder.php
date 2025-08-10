@@ -29,10 +29,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'savio@example.com',
             'isAdmin' => true,
             'isTeam' => true,
-            'role' => 'Supporto Informatico',
+            'role' => 'Mastro Diversamente Occupato',
         ]);
-
-        // User::factory(10)->create();
 
         Product::factory(5)
             ->has(Tag::factory())

@@ -26,7 +26,7 @@ class ProductFactory extends Factory
             'base_price' => fake()->numberBetween(100, 900),
             'imageUrl' => 'snowboard1.png',
             'configuration' => $json,
-            'stripe_price_id' => 'price_1Rt5ZiRxtEVoFjKik3t2Ugrx',
+            'stripe_price_id' => fake()->randomElement(['price_1Rt5ZiRxtEVoFjKik3t2Ugrx', 'price_1RtSV7RxtEVoFjKihAPunzf2', 'price_1RtSUvRxtEVoFjKiLeuP13Xj']),
         ];
     }
 }
