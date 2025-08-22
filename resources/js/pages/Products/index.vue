@@ -18,7 +18,7 @@ const props = defineProps<{
     <AppLayout>
         <Transition appear>
             <section
-                class="h-1/5 bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
+                class="h-1/5 bg-[url(@images/homepage.jpg)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
             </section>
         </Transition>
 

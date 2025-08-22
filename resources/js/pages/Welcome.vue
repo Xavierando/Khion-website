@@ -20,7 +20,7 @@ const props = defineProps<{
     <AppLayout>
         <Transition appear>
         <section
-            class="h-screen bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative transition duration-600" >
+            class="h-screen bg-[url(@images/homepage.jpg)]  bg-cover  flex flex-row item-center justify-center text-color:black relative transition duration-600" >
             <div class="mx-auto h-full grid place-items-center">
                 <div class="lg:min-w-md p-12 bg-white/20 rounded-lg">
                     <h1 class="text-7xl text-black font-bold">KHION</h1>
@@ -51,7 +51,7 @@ const props = defineProps<{
                             performanti, ma anche eco-compatibili.</p>
                     </div>
                     <div class="hidden lg:block">
-                        <img  class="rounded-xl" src="@images/homepage.png">
+                        <img  class="rounded-xl" src="@images/homepage.jpg">
                     </div>
                 </div>
                 <div class="flex flex-row item-center justify-center flex-row-reverse mt-2">
@@ -71,7 +71,7 @@ const props = defineProps<{
                             performanti, ma anche eco-compatibili.</p>
                     </div>
                     <div class="hidden lg:block">
-                        <img class="rounded-xl" src="@images/homepage.png">
+                        <img class="rounded-xl" src="@images/homepage.jpg">
                     </div>
                 </div>
             </div>
