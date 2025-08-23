@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Product } from '@/types';
+import { Cart, Product } from '@/types';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { Head, useForm } from '@inertiajs/vue3';
 import { useCookies } from '@vueuse/integrations/useCookies.mjs';
 import { computed, inject, reactive, ref } from 'vue';
 
 const props = defineProps<{
+    cart?: Cart,
     products?: Array<Product>,
 }>()
 const cookies = useCookies();
 
+/*
 const globalCart = inject('globalCart');
 
 const totalPrice = computed(() => globalCart.value.list?.reduce((a, v) => a + v.price, 0) ?? 0);
@@ -29,25 +31,42 @@ const cart = computed(() => {
         }
     })
 })
-
+*/
 const formAcquisto = useForm({
     products: []
 })
 
+const formUpdate = useForm({
+    item_id: 0,
+    quantity: 0
+})
+
 function submitAcquista() {
-    formAcquisto.products = globalCart.value.list;
+    //formAcquisto.products = globalCart.value.list;
     formAcquisto.post('/checkout');
 }
 
+
+function submitUpdate(id: number, quantity: number) {
+    formUpdate.item_id = id;
+    formUpdate.quantity = quantity;
+    formAcquisto.put('cart.update', {
+
+    });
+}
+/*
 function findProduct(id: number): Product {
     return props.products.filter((v) => v.id === id)[0]
 }
+
+    */
 
 function DeleteCartItem(cid: number) {
     globalCart.value.list = globalCart.value.list.filter((v) => v.cid !== cid);
     cookies.set('cart', globalCart.value, { path: '/' });
 }
-const voidCart = computed(() => cart.value.length === 0)
+const voidCart = computed(() => props.cart.items.length === 0)
+
 </script>
 
 <template>
@@ -64,37 +83,28 @@ const voidCart = computed(() => cart.value.length === 0)
                 <section class="h-16">
                 </section>
 
-                <section v-for="item in cart" :key="item.id" class="">
+                <section v-for="item in cart.items" :key="item.id" class="">
                     <Transition appear>
                         <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
                             <h3
                                 class="text-xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">
-                                {{ item.name }}
+                                {{ item.product.name }}
                             </h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <img class="w-full h-full" :src="item.imageUrl" />
+                                    <img class="w-full h-full" :src="item.product.images[0]?.path" />
                                 </div>
                                 <div>
-                                    <div>{{ item.description }}</div>
+                                    <div>{{ item.product.description }}</div>
 
-                                    <div class="my-2 grid grid-cols-2 relative p-3">
-                                        <h2 class="text-xl">Configurazione</h2>
-                                        <div v-for="opt in item.options" :key="opt.name"
-                                            class="col-span-2 grid grid-cols-subgrid group w-fit items-center text-lg gap-2">
-                                            <div>{{ opt.name }}</div>
-                                            <div class="font-bold">
-                                                {{ opt.option }}
-                                            </div>
-
-                                        </div>
-                                    </div>
                                     <div class="flex flex-row-reverse  items-center ">
-                                        <div class="bg-red-600/50 hover:bg-red-600 p-1 rounded-full ml-2" @click="DeleteCartItem(item.cid)">
+                                        <div class="bg-red-600/50 hover:bg-red-600 p-1 rounded-full ml-2"
+                                            @click="DeleteCartItem(item.id)">
                                             <TrashIcon class="size-6" aria-hidden="true" />
                                         </div>
                                         <div class="text-lg text-black flex">
-                                            <div class="text-xl font-bold px-1">{{ item.price }}</div> &euro;
+                                            <div class="text-xl font-bold px-1">{{ item.product.base_price * item.quantity }}</div>
+                                            &euro;
                                         </div>
                                     </div>
                                 </div>

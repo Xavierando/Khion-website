@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('stripe_checkout_id')->nullable();
             $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Cart::class);
             $table->timestamps();
         });
     }
@@ -28,5 +30,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('orders');
+        Schema::dropIfExists('order_items');
     }
 };

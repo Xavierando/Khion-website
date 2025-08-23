@@ -25,4 +25,14 @@ class Product extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function productGallery(): HasMany
+    {
+        return $this->hasMany(ProductGallery::class);
+    }
+
+    public function availableQuantity()
+    {
+        return $this->quantity - Cart_item::where('product_id', $this->id)->sum('quantity');
+    }
 }

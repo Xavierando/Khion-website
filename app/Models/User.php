@@ -4,9 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\CartStatus;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
@@ -56,5 +58,32 @@ class User extends Authenticatable implements MustVerifyEmail
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function cart(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    /**
+     * Get the pending cart, if no pending cart exist one is created
+     */
+    public function pendingCart(): hasOne
+    {
+        if($this->cart()->where('status',CartStatus::pending)->count() == 0){
+            Cart::create([
+                'user_id' => $this->id,
+                'status' => CartStatus::pending
+            ]);
+        }
+        return $this->cart()->where('status',CartStatus::pending)->one();
+    }
+
+    /**
+     * Get items count on pending cart
+     */
+    public function cartItemsCount()
+    {
+        return Cart_item::where('cart_id',$this->pendingCart->id)->sum('quantity');
     }
 }

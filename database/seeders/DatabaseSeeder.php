@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Product;
+use App\Models\ProductGallery;
 use App\Models\Tag;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -35,6 +36,7 @@ class DatabaseSeeder extends Seeder
         Product::factory(5)
             ->has(Tag::factory())
             ->has(Comment::factory(1))
+            ->has(ProductGallery::factory(3))
             ->create();
 
         $tags = Tag::all();

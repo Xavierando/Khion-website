@@ -166,6 +166,6 @@ const BaseUserSmallNavigation = reactive([
 const userSmallNavigation = computed(() => BaseUserSmallNavigation.filter((i) => i.visible))
 
 const globalCart = inject('globalCart');
-const CartLength = computed(()=>globalCart.value.list.length);
+const CartLength = computed(()=>page.props.auth.cartItems);
 
 </script>

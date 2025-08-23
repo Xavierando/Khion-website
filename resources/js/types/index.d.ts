@@ -3,6 +3,7 @@ import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
+    cartItems: number;
 }
 
 export interface BreadcrumbItem {
@@ -69,19 +70,24 @@ export interface Product {
     name: string;
     code: string;
     description: string;
-    base_price: string;
-    imageUrl: string;
+    base_price: number;
+    quantity: number;
     short: string;
     link: string;
     configuration: Productconfiguration;
+    images: array<Image>
+}
+export interface Image {
+    path: string;
+}
+
+export interface Cart_item {
+    id:number;
+    product: Product;
+    quantity: number;
 }
 
 export interface Cart {
-    list: [
-        {
-            quantity: integer;
-            product: Product;
-            config: ConfOption;
-        }
-    ]
+    items: Array<Cart_item>
 }
+

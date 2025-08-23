@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\OrderController;
@@ -13,11 +14,6 @@ use Inertia\Inertia;
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 
 Route::resource('products', ProductController::class);
-Route::get('/cart', function () {
-    return Inertia::render('Cart', [
-        'products' => ProductResource::collection(Product::all()),
-    ]);
-})->middleware(['auth', 'verified'])->name('cart');
 
 Route::middleware(['auth'])->group(function () {
     Route::put('/dashboard/user', [UserController::class, 'update'])->name('dashboard.user.update');
@@ -33,7 +29,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'submit'])->name('checkout');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout-success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout-cancel');
+
+    Route::get('/cart', [CartController::class,'index'])->name('cart.index');
+    Route::put('/cart', [CartController::class,'update'])->name('cart.update');
+    Route::delete('/cart', [CartController::class,'delete'])->name('cart.delete');
 });
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -8,7 +8,7 @@
         <Dialog v-model="ConfermaCarrello" />
         <Transition appear>
             <section
-                class="h-1/5 bg-[url(@images/homepage.png)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
+                class="h-1/5 bg-[url(@images/homepage.jpg)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
             </section>
         </Transition>
         <Transition appear>
@@ -25,36 +25,25 @@
                         product.name }}</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <img class="w-full h-full" :src="product.imageUrl" />
+                            <img class="w-full h-full" :src="product.images[0]?.path" />
                         </div>
                         <div>
                             <div>{{ product.description }}</div>
-
-                            <div class="my-2 grid grid-cols-1 relative p-3">
-                                <h2 class="text-xl">Configurations</h2>
-                                <div v-for="item in product.configuration.options" :key="item.name"
-                                    class="grid grid-cols-2 group w-fit items-center text-lg">
-                                    <div>{{ item.name }}</div>
-                                    <div>
-                                        <select @change="event => { item.ref = event.target?.value; updatePrice() }"
-                                            class="cursor-pointer p-2">
-                                            <option v-for="option of item.options" :value="option.name"
-                                                :key="option.name" :selected="option.name === item.ref">{{ option.name
-                                                }}
-                                            </option>
-                                        </select>
+                            <div class="flex flex-row-reverse  items-center justify-between">
+                                <div class="flex flex-row-reverse  items-center ">
+                                    <button
+                                        class="cursor-pointer bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 m-4 px-4 w-fit rounded"
+                                        @click="addToCart()">
+                                        Acquista
+                                    </button>
+                                    <div class="text-lg text-black flex">
+                                        <div>{{ product.base_price }}</div> &euro;
                                     </div>
-
                                 </div>
-                            </div>
-                            <div class="flex flex-row-reverse  items-center ">
-                                <button
-                                    class="cursor-pointer bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 m-4 px-4 w-fit rounded"
-                                    @click="addToCart()">
-                                    Acquista
-                                </button>
-                                <div class="text-lg text-black flex">
-                                    <div>{{ divPrice }}</div> &euro;
+                                <div class="flex flex-row-reverse  items-center gap-4 ml-3">
+                                    <PlusCircleIcon class="h-10 cursor-pointer" @click="addquantity()" />
+                                    <div>{{ quantity }}</div>
+                                    <MinusCircleIcon class="h-10 cursor-pointer" @click="subquantity()" />
                                 </div>
                             </div>
                         </div>
@@ -67,18 +56,48 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref, inject, provide } from 'vue';
 import { Product, ConfOption } from '@/types';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import Dialog from '@/components/Dialog.vue';
+import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/vue/16/solid';
 
 const props = defineProps<{
     product: Product,
 }>()
 
+const quantity = ref((props.product.quantity > 0) ? 1 : 0);
+
+const addquantity = () => {
+    if (quantity.value >= props.product.quantity) {
+        quantity.value = props.product.quantity;
+    } else {
+        quantity.value++;
+    }
+}
+
+const subquantity = () => {
+    if (quantity.value <= 0) {
+        quantity.value = 0;
+    } else {
+        quantity.value--;
+    }
+}
+
+const CartItem = useForm({
+    'product': props.product.id,
+    'quantity': 0
+});
+
+const addToCart = () => {
+    CartItem.quantity = quantity.value;
+    CartItem.put(route('cart.update'), { preserveState: true, onFinish: () => { } });
+};
+
 const ConfermaCarrello = ref(false)
-provide(/* key */ 'ConfermaCarrello', /* value */ ConfermaCarrello)
+provide('ConfermaCarrello', ConfermaCarrello)
+/*
 
 props.product.configuration.options?.map((v) => { v.ref = (v.options.filter(i => i.price === 0))[0].name; return v })
 
@@ -123,4 +142,5 @@ const addToCart = () => {
     console.log(JSON.stringify(globalCart.value));
     cookies.set('cart', globalCart.value, { path: '/' });
 }
+    */
 </script>
