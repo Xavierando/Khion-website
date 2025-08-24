@@ -5,7 +5,6 @@
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <AppLayout>
-        <Dialog v-model="ConfermaCarrello" />
         <Transition appear>
             <section
                 class="h-1/5 bg-[url(@images/homepage.jpg)]  bg-cover  flex flex-row item-center justify-center text-color:black relative">
@@ -18,129 +17,26 @@
             </section>
         </Transition>
 
-        <Transition appear>
-            <section>
-                <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
-                    <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">{{
-                        product.name }}</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <img class="w-full h-full" :src="product.images[0]?.path" />
-                        </div>
-                        <div>
-                            <div>{{ product.description }}</div>
-                            <div class="flex flex-row-reverse  items-center justify-between">
-                                <div class="flex flex-row-reverse  items-center ">
-                                    <button
-                                        class="cursor-pointer bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 m-4 px-4 w-fit rounded"
-                                        @click="addToCart()">
-                                        Acquista
-                                    </button>
-                                    <div class="text-lg text-black flex">
-                                        <div>{{ product.base_price }}</div> &euro;
-                                    </div>
-                                </div>
-                                <div class="flex flex-row-reverse  items-center gap-4 ml-3">
-                                    <PlusCircleIcon class="h-10 cursor-pointer" @click="addquantity()" />
-                                    <div>{{ quantity }}</div>
-                                    <MinusCircleIcon class="h-10 cursor-pointer" @click="subquantity()" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </Transition>
+        <CardSnowBig :product='product' scenario="show" :item="cartItem"></CardSnowBig>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { ref, inject, provide } from 'vue';
-import { Product, ConfOption } from '@/types';
-import { useCookies } from '@vueuse/integrations/useCookies';
-import Dialog from '@/components/Dialog.vue';
-import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/vue/16/solid';
+import { Head} from '@inertiajs/vue3';
+import { Cart, Product } from '@/types';
+import CardSnowBig from '@/components/ui/card/CardSnowBig.vue';
+import { ref } from 'vue';
+
 
 const props = defineProps<{
     product: Product,
+    cart?: Cart,
 }>()
 
-const quantity = ref((props.product.quantity > 0) ? 1 : 0);
-
-const addquantity = () => {
-    if (quantity.value >= props.product.quantity) {
-        quantity.value = props.product.quantity;
-    } else {
-        quantity.value++;
-    }
+const cartItem = props.cart?.items.find((v) => v.product.id === props.product.id);
+if(props.cart){
+    cartItem
 }
 
-const subquantity = () => {
-    if (quantity.value <= 0) {
-        quantity.value = 0;
-    } else {
-        quantity.value--;
-    }
-}
-
-const CartItem = useForm({
-    'product': props.product.id,
-    'quantity': 0
-});
-
-const addToCart = () => {
-    CartItem.quantity = quantity.value;
-    CartItem.put(route('cart.update'), { preserveState: true, onFinish: () => { } });
-};
-
-const ConfermaCarrello = ref(false)
-provide('ConfermaCarrello', ConfermaCarrello)
-/*
-
-props.product.configuration.options?.map((v) => { v.ref = (v.options.filter(i => i.price === 0))[0].name; return v })
-
-const divPrice = ref(0);
-const findOption = (item: Array<ConfOption>, name: string) => {
-    return item.filter((v) => v.name === name)
-}
-const updatePrice = () => {
-    divPrice.value = parseInt(props.product.configuration.options?.reduce(
-        (a, i) => a + findOption(i.options, i.ref)[0].price,
-        props.product.base_price
-    ));
-}
-
-updatePrice();
-
-const globalCart = inject('globalCart')
-const cookies = useCookies()
-
-const addToCart = () => {
-    ConfermaCarrello.value = true;
-    const id = (globalCart.value.list.length == 0) ? 0 : globalCart.value.list[globalCart.value.list.length - 1]?.cid + 1
-    const product = {
-        cid: id,
-        id: props.product.id,
-        name: props.product.name,
-        imageUrl: props.product.imageUrl,
-        price: divPrice.value
-    };
-
-    product.options = props.product.configuration.options.map((i) => {
-        return {
-            id: id,
-            name: i.name,
-            option: findOption(i.options, i.ref)[0].name,
-            price: findOption(i.options, i.ref)[0].price,
-        }
-    });
-
-    globalCart.value.list.push(product);
-
-    console.log(JSON.stringify(globalCart.value));
-    cookies.set('cart', globalCart.value, { path: '/' });
-}
-    */
 </script>

@@ -10,10 +10,10 @@ class ProductGallery extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductGalleryFactory> */
     protected $guarded = [];
-    
+
     use HasFactory;
 
-        public function tags(): BelongsTo
+    public function tags(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }

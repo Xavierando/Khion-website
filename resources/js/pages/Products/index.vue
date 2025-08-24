@@ -2,10 +2,11 @@
 import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { Product } from '@/types';
+import { Cart, Product } from '@/types';
 
 const props = defineProps<{
     products?: Array<Product>,
+    cart?: Cart,
 }>()
 </script>
 
@@ -29,7 +30,7 @@ const props = defineProps<{
                         nostri
                         prodotti</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card v-for="product in props.products" :product="product" :key="product.id">
+                        <Card v-for="product in props.products" :product="product" :cart="cart" :key="product.id">
                         </Card>
                     </div>
                 </div>
