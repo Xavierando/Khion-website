@@ -29,9 +29,9 @@
                 </div>
               </div>
               <div class="flex flex-row-reverse  items-center gap-4 ml-3 mt-6">
-                <PlusCircleIcon :class="['h-8 cursor-pointer', { 'opacity-50': product.quantity === 0 }]"
+                <PlusCircleIcon :class="['h-8 cursor-pointer', { 'opacity-50': quantityLeft === 0 }]"
                   @click="addquantity()" />
-                <div>{{ quantity}}</div>
+                <div>{{ quantity }}</div>
                 <MinusCircleIcon :class="['h-8 cursor-pointer', { 'opacity-50': quantity === 0 }]"
                   @click="subquantity()" />
               </div>
@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { Cart_item, Product } from '@/types';
-import { provide, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/vue/16/solid';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import VueEasyLightbox from 'vue-easy-lightbox';
@@ -73,6 +73,7 @@ const onShow = () => {
 const onHide = () => (visibleRef.value = false)
 
 const quantity = ref();
+const quantityLeft = computed(() => (props.item) ? props.product.quantity : props.product.quantity - quantity.value)
 if (props.item) {
   quantity.value = props.item?.quantity;
 } else {
@@ -80,8 +81,8 @@ if (props.item) {
 }
 
 const addquantity = () => {
-  if (props.product.quantity === 0) {
-    quantity.value = props.item?.quantity ?? 0;
+  if (quantityLeft.value === 0) {
+    quantity.value = props.item?.quantity ?? props.product.quantity;
   } else {
     quantity.value++;
   }
