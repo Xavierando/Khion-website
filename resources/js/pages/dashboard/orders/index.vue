@@ -4,20 +4,27 @@
             class="md:h-screen rounded-xl border border-sidebar-border/70 dark:border-sidebar-border pl-5 flex flex-col divide-y">
             <h2 class="mt-24 text-xl text-bold p-3">Ordini</h2>
             <div v-for="order in props.orders.data" :key="order.id" class="w-full bg-gray-100/10">
-                <div class="flex flex-row justify-between p-2 mx-1   items-center">
-                    <div class="flex flex-row text-sm md:text-md">
+                <div class="flex flex-row justify-between p-2 mx-1 items-center">
+                    <div class="flex flex-row text-sm md:text-md items-center">
                         <div>Ordine {{ order.id }}</div>
-                        <div class="md:text-sm text-xs ml-4 px-2 rounded-full bg-green-200 font-bold">{{ order.status }}</div>
+                        <div class="md:text-sm text-xs ml-4 px-2 rounded-full bg-green-200 font-bold items-center">{{
+                            order.status }}</div>
+                        <div v-if="page.props.auth.user.isAdmin" class="mx-3 flex flex-row gap-2">
+                            <button class="bg-red-300 p-2 cursor-pointer hover:bg-red-400 transiction-bg duration-200"
+                                v-for="bstatus in order.statusOptions" :key="bstatus"
+                                @click="changeStatus(bstatus,order.id)">{{ bstatus }}</button>
+                        </div>
                     </div>
                     <div class="flex flex-row">
                         <div class="font-bold">{{ order.total }}</div>&euro;
                     </div>
                 </div>
                 <div class="flex flex-col ml-3">
-                    <div v-for="prod in order.items" :key="prod.id" class="grid grid-cols-2 md:w-fit items-center">
-                        <div class="mr-2 text-md md:text-sm font-bold ">{{ prod.name }}</div>
+                    <div v-for="prod in order.items" :key="prod.product.id"
+                        class="grid grid-cols-2 md:w-fit items-center">
+                        <div class="mr-2 text-md md:text-sm font-bold ">{{ prod.product.name }}</div>
                         <div class="grid grid-cols-2 divide-y my-1">
-                            <div v-for="conf in prod.configuration" :key="conf.name"
+                            <div v-for="conf in prod.product.configuration" :key="conf.name"
                                 class="bg-gray-100 col-span-2 grid grid-cols-subgrid gap-y-2">
                                 <div class="px-2 text-sm font-normal">
                                     {{ conf.name }}
@@ -44,10 +51,10 @@ import { useDropZone } from '@vueuse/core';
 import { TailwindPagination } from 'laravel-vue-pagination';
 
 const props = defineProps<{
-    orders?: Array<Object>,
+    orders: Array<Object>,
 }>()
 
-function changePage(page) {
+function changePage(page: string) {
     const path = props.orders.meta.path;
     //document.location.href = path + '&page=' + page;
     useForm({}).get(path + '?page=' + page, {
@@ -57,7 +64,9 @@ function changePage(page) {
     })
 }
 
-
+function changeStatus(status: string, id:number) {
+    useForm({ status: status }).put(route('dashboard.order.update',{order:id}));
+}
 
 
 const breadcrumbs: BreadcrumbItem[] = [

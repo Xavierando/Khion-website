@@ -7,17 +7,16 @@ use App\Http\Resources\ProductResource;
 use App\Models\Cart_item;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cart = Auth::user()->pendingCart()->with(['cart_items'])->first();
-        //return $cart;
-        //return new CartResource($cart);
+        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
+        // return $cart;
+        // return new CartResource($cart);
 
         return Inertia::render('Cart', [
             'cart' => new CartResource($cart),
@@ -29,21 +28,30 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'product' => 'required|exists:products,id',
-            'quantity' => 'required|integer:strict'
+            'quantity' => 'required|integer:strict',
         ]);
-        $cart = Auth::user()->pendingCart()->with(['cart_items'])->first();
+        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
         $product = Product::find($validated['product']);
-        if ($validated['quantity'] <= $product->availableQuantity()) {
-            Cart_item::create([
-                'cart_id' => $cart->id,
-                'product_id' => $validated['product'],
-                'quantity' => $validated['quantity']
-            ]);
+        $item = $cart->cart_items->first(fn ($v) => $v['product_id'] == $product->id);
+
+        if (
+            $validated['quantity'] <= $product->availableQuantity() + $item->quantity &&
+            $validated['quantity'] >= 0
+        ) {
+            if ($item == null) {
+                throw new \Exception('missing item');
+            }
+            Log::debug($validated['quantity']);
+            $item->quantity = $validated['quantity'];
+            $item->save();
         }
 
+        $cart->refresh();
+
         return redirect()->back();
+
         return Inertia::render('Cart', [
-            'cart' => $cart,
+            'cart' => new CartResource($cart),
         ]);
     }
 
@@ -51,30 +59,41 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'product' => 'required|exists:products,id',
-            'quantity' => 'required|integer:strict'
+            'quantity' => 'required|integer:strict',
         ]);
 
-        $cart = Auth::user()->pendingCart()->with(['cart_items'])->first();
+        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
         $product = Product::find($validated['product']);
 
         if ($validated['quantity'] <= $product->availableQuantity()) {
-            Cart_item::create([
-                'cart_id' => $cart->id,
-                'product_id' => $validated['product'],
-                'quantity' => $validated['quantity']
-            ]);
+            $item = $cart->cart_items->first(fn ($v) => $v['product_id'] == $product->id);
+            if ($item == null) {
+                Cart_item::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $validated['product'],
+                    'quantity' => $validated['quantity'],
+                ]);
+            } else {
+                $item->quantity = $validated['quantity'];
+                $item->save();
+            }
         }
 
         return redirect()->back();
-        return Inertia::render('Cart', [
-            'cart' => $cart,
-        ]);
     }
+
     public function delete(Request $request)
     {
-        Auth::user()->pendingCart()?->delete();
+        $validated = $request->validate([
+            'product' => 'required|exists:products,id',
+        ]);
+
+        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
+        $item = $cart->cart_items->first(fn ($v) => $v['product_id'] == $validated['product']);
+        $item->delete();
+
         return Inertia::render('Cart', [
-            'cart' => ['items' => []],
+            'cart' => new CartResource($cart),
         ]);
     }
 }

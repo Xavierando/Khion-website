@@ -24,7 +24,7 @@ class ProductFactory extends Factory
             'name' => array_reduce(fake()->words(2), fn ($c, $i) => $c.' '.$i),
             'description' => fake()->text(600),
             'base_price' => fake()->numberBetween(100, 900),
-            'quantity' => fake()->numberBetween(1,5),
+            'quantity' => fake()->numberBetween(1, 5),
             'configuration' => $json,
             'stripe_price_id' => fake()->randomElement(['price_1Rt5ZiRxtEVoFjKik3t2Ugrx', 'price_1RtSV7RxtEVoFjKihAPunzf2', 'price_1RtSUvRxtEVoFjKiLeuP13Xj']),
         ];

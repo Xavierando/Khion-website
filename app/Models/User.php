@@ -70,13 +70,14 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function pendingCart(): hasOne
     {
-        if($this->cart()->where('status',CartStatus::pending)->count() == 0){
+        if ($this->cart()->where('status', CartStatus::pending)->count() == 0) {
             Cart::create([
                 'user_id' => $this->id,
-                'status' => CartStatus::pending
+                'status' => CartStatus::pending,
             ]);
         }
-        return $this->cart()->where('status',CartStatus::pending)->one();
+
+        return $this->cart()->where('status', CartStatus::pending)->one();
     }
 
     /**
@@ -84,6 +85,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function cartItemsCount()
     {
-        return Cart_item::where('cart_id',$this->pendingCart->id)->sum('quantity');
+        return Cart_item::where('cart_id', $this->pendingCart->id)->sum('quantity');
     }
 }

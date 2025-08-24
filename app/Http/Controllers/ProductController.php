@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -39,9 +41,14 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Request $request, Product $product)
     {
-        return Inertia::render('Products/show', ['product' => ProductResource::make($product)]);
+        $cart = $request?->user()->pendingCart()->with(['cart_items'])->first() ?? [];
+
+        return Inertia::render('Products/show', [
+            'product' => ProductResource::make($product),
+            'cart' => new CartResource($cart),
+        ]);
     }
 
     /**

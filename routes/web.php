@@ -6,10 +6,7 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 
@@ -22,7 +19,8 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/dashboard/user');
     })->name('dashboard');
 
-    Route::get('/dashboard/order', [OrderController::class, 'index'])->name('dashboard.order.index');
+    Route::get('/dashboard/order', [OrderController::class, 'index'])->name('dashboard.order');
+    Route::put('/dashboard/order/{order}', [OrderController::class, 'update'])->name('dashboard.order.update');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -30,11 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout-success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout-cancel');
 
-    Route::get('/cart', [CartController::class,'index'])->name('cart.index');
-    Route::put('/cart', [CartController::class,'update'])->name('cart.update');
-    Route::delete('/cart', [CartController::class,'delete'])->name('cart.delete');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::put('/cart', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart', [CartController::class, 'create'])->name('cart.create');
+    Route::delete('/cart', [CartController::class, 'delete'])->name('cart.delete');
 });
-
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

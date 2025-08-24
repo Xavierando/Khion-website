@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class OrderController extends Controller
@@ -24,36 +24,16 @@ class OrderController extends Controller
     {
 
         $user = $request->user();
-
-        if ($request->has(['name', 'role', 'bio'])) {
-            $validated = $request->validate([
-                'name' => 'required|string',
-                'role' => 'string|nullable',
-                'bio' => 'string|nullable',
-            ]);
-            $user->update($validated);
+        Log::debug($user->isAdmin);
+        if (! $user->isAdmin && $user->id != $order->user_id) {
+            return redirect()->back();
         }
 
-        if ($request->has('oldpsw', 'newpsw')) {
-            $validated = $request->validate([
-                'oldpsw' => 'required|string',
-                'newpsw' => 'required|string|min:8',
-            ]);
-            if (Hash::check($validated['oldpsw'], $user->password)) {
-                $user->update(['password' => Hash::make($validated['newpsw'])]);
-            }
+        if ($request->has('status') && $user->isAdmin) {
+            $status = $request->enum('status', OrderStatus::class);
+            $order->statusUpdate($status);
         }
 
-        if ($request->hasFile('pic')) {
-            $request->validate([
-                'pic' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:512',
-            ]);
-
-            $path = Storage::disk('images')->put('pic/', $request->file('pic'));
-            Storage::disk('images')->delete($user->imageUrl);
-            $user->update(['imageUrl' => $path]);
-        }
-
-        return redirect()->route('dashboard.user.edit');
+        return redirect()->route('dashboard.order');
     }
 }

@@ -1,71 +1,24 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Cart, Product } from '@/types';
-import { TrashIcon } from '@heroicons/vue/24/outline';
+import { Cart } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
-import { useCookies } from '@vueuse/integrations/useCookies.mjs';
-import { computed, inject, reactive, ref } from 'vue';
+import { computed } from 'vue';
+import CardSnowBig from '@/components/ui/card/CardSnowBig.vue';
 
 const props = defineProps<{
-    cart?: Cart,
-    products?: Array<Product>,
+    cart: Cart,
 }>()
-const cookies = useCookies();
 
-/*
-const globalCart = inject('globalCart');
-
-const totalPrice = computed(() => globalCart.value.list?.reduce((a, v) => a + v.price, 0) ?? 0);
-
-const cart = computed(() => {
-    return globalCart.value.list.map((v) => {
-        const product: Product = findProduct(v.id);
-        return {
-            'cid': v.cid,
-            'id': v.id,
-            'description': product.description,
-            'price': product.base_price,
-            'imageUrl': product.imageUrl,
-            'name': product.name,
-            'options':v.options
-        }
-    })
-})
-*/
 const formAcquisto = useForm({
     products: []
 })
 
-const formUpdate = useForm({
-    item_id: 0,
-    quantity: 0
-})
-
 function submitAcquista() {
-    //formAcquisto.products = globalCart.value.list;
     formAcquisto.post('/checkout');
 }
 
-
-function submitUpdate(id: number, quantity: number) {
-    formUpdate.item_id = id;
-    formUpdate.quantity = quantity;
-    formAcquisto.put('cart.update', {
-
-    });
-}
-/*
-function findProduct(id: number): Product {
-    return props.products.filter((v) => v.id === id)[0]
-}
-
-    */
-
-function DeleteCartItem(cid: number) {
-    globalCart.value.list = globalCart.value.list.filter((v) => v.cid !== cid);
-    cookies.set('cart', globalCart.value, { path: '/' });
-}
-const voidCart = computed(() => props.cart.items.length === 0)
+const voidCart = computed(() => props.cart.items.length === 0);
+const totalPrice = computed(() => props.cart.items?.reduce((a, v) => a + v.product.base_price * v.quantity, 0) ?? 0);
 
 </script>
 
@@ -84,6 +37,9 @@ const voidCart = computed(() => props.cart.items.length === 0)
                 </section>
 
                 <section v-for="item in cart.items" :key="item.id" class="">
+                    <CardSnowBig :item="item" :product='item.product' scenario="cart"></CardSnowBig>
+
+                    <!--
                     <Transition appear>
                         <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
                             <h3
@@ -97,20 +53,31 @@ const voidCart = computed(() => props.cart.items.length === 0)
                                 <div>
                                     <div>{{ item.product.description }}</div>
 
-                                    <div class="flex flex-row-reverse  items-center ">
-                                        <div class="bg-red-600/50 hover:bg-red-600 p-1 rounded-full ml-2"
-                                            @click="DeleteCartItem(item.id)">
-                                            <TrashIcon class="size-6" aria-hidden="true" />
+                                    <div class="flex flex-row-reverse  items-center justify-between mt-3">
+                                        <div class="flex flex-row-reverse  items-center ">
+                                            <div class="bg-red-600/50 hover:bg-red-600 p-1 rounded-full ml-2"
+                                                @click="DeleteCartItem(item.id)">
+                                                <TrashIcon class="size-6" aria-hidden="true" />
+                                            </div>
+                                            <div class="text-lg text-black flex">
+                                                <div class="text-xl font-bold px-1">{{ item.product.base_price *
+                                                    item.quantity }}</div>
+                                                &euro;
+                                            </div>
                                         </div>
-                                        <div class="text-lg text-black flex">
-                                            <div class="text-xl font-bold px-1">{{ item.product.base_price * item.quantity }}</div>
-                                            &euro;
+                                        <div class="flex flex-row-reverse  items-center gap-4 ml-6">
+                                            <PlusCircleIcon :class="['h-10 cursor-pointer' ,{'opacity-50' : item.product.quantity === 0}]"
+                                                @click="submitUpdate(item.product.id, item.quantity + 1)" />
+                                            <div>{{ item.quantity }}</div>
+                                            <MinusCircleIcon :class="['h-10 cursor-pointer' ,{'opacity-50' : item.quantity === 0}]"
+                                                @click="submitUpdate(item.product.id, item.quantity - 1)" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </Transition>
+                    -->
                 </section>
 
                 <section class="top-16 h-16" v-if="voidCart">

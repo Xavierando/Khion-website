@@ -41,17 +41,9 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { useCookies } from '@vueuse/integrations/useCookies.mjs';
-import { inject } from 'vue';
-
-const cookies = useCookies();
 
 const props = defineProps<{
     order: string,
 }>()
-
-const globalCart = inject('globalCart');
-globalCart.value.list = []; 
-cookies.set('cart', globalCart.value, { path: '/' });
 
 </script>

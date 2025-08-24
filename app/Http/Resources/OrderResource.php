@@ -22,7 +22,8 @@ class OrderResource extends JsonResource
             'total' => $this->total,
             'stripe_checkout_id' => $this->stripe_checkout_id,
             'user' => new UserResource(User::find($this->user_id)),
-            'items' => OrderItemsResource::collection($this->order_items),
+            'items' => CartItemResource::collection($this->order_items),
+            'statusOptions' => $this->statusOptions(),
         ];
     }
 }

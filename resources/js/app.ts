@@ -6,14 +6,10 @@ import type { DefineComponent } from 'vue';
 import { createApp, h, ref } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
-import { useCookies } from '@vueuse/integrations/useCookies';
 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-
-const cookies = useCookies()
-const globalCart = ref(cookies.get('cart',{path:'/'}) ?? { "list": [] });
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -22,7 +18,6 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .provide('globalCart', globalCart)
             .mount(el);
     },
 

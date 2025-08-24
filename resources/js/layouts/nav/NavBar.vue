@@ -158,14 +158,13 @@ const userNavigation = computed(() => BaseUserNavigation.filter((i) => i.visible
 
 const BaseUserSmallNavigation = reactive([
     { name: 'User Settings', href: route('dashboard'), event: '', visible: computed(() => page.props.auth.user ?? false) },
-    { name: 'Orders', href: route('dashboard.order.index'), event: '', visible: computed(() => page.props.auth.user ?? false) },
+    { name: 'Orders', href: route('dashboard.order'), event: '', visible: computed(() => page.props.auth.user ?? false) },
     { name: 'Sign out', href: '#', event: submit, visible: computed(() => page.props.auth.user ?? false) },
     { name: 'Login', href: '/login', event: '', visible: computed(() => !page.props.auth.user) }
 ])
 
 const userSmallNavigation = computed(() => BaseUserSmallNavigation.filter((i) => i.visible))
 
-const globalCart = inject('globalCart');
 const CartLength = computed(()=>page.props.auth.cartItems);
 
 </script>
