@@ -27,9 +27,11 @@ const props = defineProps<{
         </div>
         <div class="flex items-center justify-between">
           <span class="font-bold text-lg">{{ product.base_price }} &euro;</span>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-            <a :href="product.link">Dettagli</a>
-          </button>
+          <a :href="product.link">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer">
+              Dettagli
+            </button>
+          </a>
         </div>
       </div>
     </div>
