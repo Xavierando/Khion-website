@@ -23,6 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <ul class="mt-24 w-full">
                     <li class="mt-1 w-full"><a class="w-full hover:bg-gray-200/60 transtion duration-300 cursor-pointer p-1 rounded-sm" :href="route('dashboard.user.edit')">Dati personali</a></li>
                     <li class="mt-1 w-full"><a class="w-full hover:bg-gray-200/60 transtion duration-300 cursor-pointer p-1 rounded-sm" :href="route('dashboard.order')">Ordini</a></li>
+                    <li class="mt-1 w-full"><a class="w-full hover:bg-gray-200/60 transtion duration-300 cursor-pointer p-1 rounded-sm" :href="route('dashboard.products')">Prodotti</a></li>
                 </ul>
 
             </div>
