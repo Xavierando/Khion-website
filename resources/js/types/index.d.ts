@@ -72,10 +72,13 @@ export interface Product {
     description: string;
     base_price: number;
     quantity: number;
+    base_quantity: number;
     short: string;
     link: string;
     configuration: Productconfiguration;
-    images: array<Image>
+    images: array<Image>;
+    default_images:Image;
+    created: string;
 }
 export interface Image {
     path: string;

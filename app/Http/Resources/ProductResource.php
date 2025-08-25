@@ -26,7 +26,10 @@ class ProductResource extends JsonResource
             'link' => '/products/'.$this->id,
             'configuration' => $this->configuration,
             'quantity' => $this->availableQuantity(),
+            'base_quantity' => $this->quantity,
             'images' => ProductGalleryResource::collection($this->productGallery),
+            'default_images' => new ProductGalleryResource($this->defaultImage()),
+            'created' => $this->created_at,
         ];
     }
 }

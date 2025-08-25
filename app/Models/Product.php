@@ -35,4 +35,10 @@ class Product extends Model
     {
         return $this->quantity - Cart_item::where('product_id', $this->id)->sum('quantity');
     }
+
+    public function defaultImage()
+    {
+        return $this->hasMany(ProductGallery::class)->first();
+
+    }
 }
