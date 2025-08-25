@@ -21,6 +21,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard/order', [OrderController::class, 'index'])->name('dashboard.order');
     Route::put('/dashboard/order/{order}', [OrderController::class, 'update'])->name('dashboard.order.update');
+
+
+    Route::get('/dashboard/products', [ProductController::class, 'edit'])->name('dashboard.products');
+    Route::post('/dashboard/products', [ProductController::class, 'store']);
+    Route::put('/dashboard/products/{product}', [ProductController::class, 'update'])->name('dashboard.products.update');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
