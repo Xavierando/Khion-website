@@ -23,7 +23,10 @@ const UserData = useForm({
     bio: page.props.auth.user?.bio,
 })
 
-const UserImg = useForm({
+const UserImg = useForm<{
+    _method:string;
+    pic:File|null;
+}>({
     _method: 'put',
     pic: null,
 })
