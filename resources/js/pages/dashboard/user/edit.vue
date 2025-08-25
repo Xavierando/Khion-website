@@ -104,7 +104,7 @@ const submitUserPsw = () => {
                             </svg>
                         </span>
                         <input type="file" class="hidden" ref="altPic"
-                            @onChange="UserImg.pic = $event.target.files[0]" />
+                            @onChange="UserImg.pic = $event.target.files[0];submitUserImg();" />
                     </div>
                 </div>
             </div>
