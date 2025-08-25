@@ -14,7 +14,7 @@ const props = defineProps<{
     <div
       :class="cn('max-w-md mx-auto rounded-md overflow-hidden shadow-md hover:shadow-lg grid grid-col-1 grid-template-columns: max-content 1fr', props.class)">
       <div class="relative">
-        <img class="w-full" :src="product.images[0].src" alt="Product Image">
+        <img class="w-full" :src="product.default_images?.src" alt="Product Image">
         <div class="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-md text-sm font-medium hidden">
         </div>
       </div>

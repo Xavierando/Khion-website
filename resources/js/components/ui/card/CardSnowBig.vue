@@ -7,7 +7,7 @@
           product.name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <img @click="onShow()" class="w-full h-full" :src="product.images[0]?.src" />
+            <img @click="onShow()" class="w-full h-full" :src="product.default_images?.src" />
             <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef"
               @hide="onHide"></vue-easy-lightbox>
           </div>
@@ -63,7 +63,9 @@ const props = defineProps<{
 const visibleRef = ref(false)
 const indexRef = ref(0) // default 0
 //console.log(props.product.images.map((v) => v.src));
-const imgsRef = ref(props.product.images.map((v) => v.src))
+const imgsRef = ref(props.product.images.map((v: {
+  src: string;
+}) => v.src))
 //const imgsRef = ref([])
 
 const onShow = () => {
