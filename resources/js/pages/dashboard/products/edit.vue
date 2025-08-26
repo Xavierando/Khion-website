@@ -189,7 +189,7 @@ function modificaProdotto(product: Product) {
 }
 
 function eliminaProdotto(product: Product) {
-
+    useForm({}).delete(route('dashboard.products.delete', { product: product.id }));
 }
 
 </script>

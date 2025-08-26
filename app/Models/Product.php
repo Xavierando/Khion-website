@@ -17,6 +17,15 @@ class Product extends Model
         'configuration' => 'array',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($product) {
+            $product->productGallery->map( fn($v) => $v->delete());
+        });
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);

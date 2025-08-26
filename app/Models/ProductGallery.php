@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class ProductGallery extends Model
 {
@@ -12,6 +13,15 @@ class ProductGallery extends Model
     protected $guarded = [];
 
     use HasFactory;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($image) {
+            Storage::disk('images')->delete($image->fsname);
+        });
+    }
 
     public function tags(): BelongsTo
     {

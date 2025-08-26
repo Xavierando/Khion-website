@@ -151,8 +151,13 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Request $request,Product $product)
     {
-        //
+        if (!$request->user()->isAdmin) {
+            return redirect()->back();
+        }
+
+        $product->delete();
+        return redirect()->route('dashboard.products');
     }
 }
