@@ -81,7 +81,9 @@ export interface Product {
     created: string;
 }
 export interface Image {
-    path: string;
+    thumb: string;
+    src: string;
+    caption: string;
 }
 
 export interface Cart_item {
