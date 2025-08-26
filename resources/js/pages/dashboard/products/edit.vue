@@ -179,12 +179,12 @@ function modificaProdotto(product: Product) {
     PData.description = product.description;
     PData.base_price = product.base_price;
     PData.quantity = product.base_quantity;
-    imageGallery.value = product.images.map((v: Image) => {
-        return {
-            'file': null,
-            'src': v.path,
-        }
-    });
+    imageGallery.value = [];
+    product.images.map((v: Image) => imageGallery.value.push({
+        'file': null,
+        'src': v.src,
+    })
+    );
     formAddProduct.value = true;
 }
 
@@ -227,9 +227,12 @@ function eliminaProdotto(product: Product) {
                     </div>
                 </div>
             </div>
-            <div v-if="formAddProduct" class="flex flex-col">
-                <button class="p-2 rounded-sm bg-blue-500 h-fit cursor-pointer hover:bg-blue-600">Torna ai
-                    Prodotti</button>
+            <div v-if="formAddProduct" class="flex flex-col pr-3">
+                <div class="flex flex-row justify-between">
+                    <a :href="route('dashboard.products')"><button class="p-2 rounded-sm bg-blue-500 h-fit w-fit cursor-pointer hover:bg-blue-600">Torna ai
+                        Prodotti</button></a>
+                    <button class="p-2 rounded-sm bg-blue-500 h-fit w-fit cursor-pointer hover:bg-blue-600" @click="addProduct()">Crea Nuovo Prodotto</button>
+                </div>
                 <div class="flex flex-col grow-[10vw]">
                     <label>Code</label>
                     <Input class="max-w-sm mb-3" v-model="PData.code" @change="submitData('code')" />
@@ -256,7 +259,6 @@ function eliminaProdotto(product: Product) {
                     <div value="1" class="text-red-700 text-sm" v-if="PData.errors.quantity">{{ PData.errors.quantity }}
                     </div>
                 </div>
-                <div><button @click="addProduct()">Crea Nuovo Prodotto</button></div>
                 <div ref="dropZonePic"
                     class="w-fit h-fit shrink m-8 grid grid-cols-3 gap-2 items-center justify-items-center">
                     <div @click="altPic.click()">
