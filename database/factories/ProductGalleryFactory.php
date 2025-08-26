@@ -17,7 +17,7 @@ class ProductGalleryFactory extends Factory
     public function definition(): array
     {
         return [
-            'fsname' => 'snowboard1.png',
+            'fsname' => 'product/snowboard1.png',
         ];
     }
 }

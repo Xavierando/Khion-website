@@ -19,7 +19,8 @@ return new class extends Migration
             $table->integer('base_price');
             $table->integer('quantity');
             $table->json('configuration');
-            $table->string('stripe_price_id')->nullable();
+            $table->string('stripe_id');
+            $table->string('stripe_price_id');
             $table->timestamps();
         });
     }

@@ -48,6 +48,7 @@ class ProductController extends Controller
         $Product->base_price = $request->input('base_price');
         $Product->quantity = $request->input('quantity');
         $Product->configuration = '{"options":[]}';
+        $Product->genereteStripeID();
         $Product->save();
 
         $i = 0;
@@ -104,14 +105,17 @@ class ProductController extends Controller
 
         if($request->input('update') == 'name' && $request->has('name')){
             $product->name = $request->input('name');
+            $product->updateStripeInfo();
         }
 
         if($request->input('update') == 'description' && $request->has('description')){
             $product->description = $request->input('description');
+            $product->updateStripeInfo();
         }
 
         if($request->input('update') == 'base_price' && $request->has('base_price')){
             $product->base_price = $request->input('base_price');
+            $product->updateStripePrice();
         }
 
         if($request->input('update') == 'quantity' && $request->has('quantity')){
