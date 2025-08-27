@@ -64,6 +64,10 @@ export interface Productconfiguration {
     ]
 }
 
+export interface Tag {
+    tag:string;
+}
+
 export interface Product {
     id: number;
     type: string;
@@ -79,6 +83,7 @@ export interface Product {
     images: array<Image>;
     default_images:Image;
     created: string;
+    tags: Tag[];
 }
 export interface Image {
     thumb: string;

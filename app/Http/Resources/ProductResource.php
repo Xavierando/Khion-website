@@ -30,6 +30,7 @@ class ProductResource extends JsonResource
             'images' => ProductGalleryResource::collection($this->productGallery),
             'default_images' => new ProductGalleryResource($this->defaultImage()),
             'created' => $this->created_at,
+            'tags' => TagResource::collection($this->tags),
         ];
     }
 }
