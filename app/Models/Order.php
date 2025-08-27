@@ -29,7 +29,7 @@ class Order extends Model
 
     public function order_items(): HasMany
     {
-        return $this->hasMany(Cart_item::class, 'cart_id', 'cart_id');
+        return $this->hasMany(CartItem::class, 'cart_id', 'cart_id');
     }
 
     public function user(): BelongsTo

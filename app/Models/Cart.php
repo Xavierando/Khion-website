@@ -19,13 +19,13 @@ class Cart extends Model
         'status' => CartStatus::class,
     ];
 
-    public function cart(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function cart_items(): HasMany
+    public function CartItems(): HasMany
     {
-        return $this->hasMany(Cart_item::class);
+        return $this->hasMany(CartItem::class);
     }
 }

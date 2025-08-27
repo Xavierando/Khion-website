@@ -22,7 +22,7 @@ class Product extends Model
         parent::boot();
 
         static::deleted(function ($product) {
-            $product->productGallery->map( fn($v) => $v->delete());
+            $product->productGallery->map(fn ($v) => $v->delete());
         });
     }
 
@@ -43,7 +43,7 @@ class Product extends Model
 
     public function availableQuantity()
     {
-        return $this->quantity - Cart_item::where('product_id', $this->id)->sum('quantity');
+        return $this->quantity - CartItem::where('product_id', $this->id)->sum('quantity');
     }
 
     public function defaultImage()
@@ -89,10 +89,10 @@ class Product extends Model
             'product' => $this->stripe_id,
         ]);
 
-        if($this->stripe_price_id){
-        $price = $stripe->prices->update($this->stripe_price_id,[
-            'active' => 'false'
-        ]);
+        if ($this->stripe_price_id) {
+            $price = $stripe->prices->update($this->stripe_price_id, [
+                'active' => 'false',
+            ]);
         }
 
         $this->stripe_price_id = $price['id'];

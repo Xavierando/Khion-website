@@ -85,6 +85,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function cartItemsCount()
     {
-        return Cart_item::where('cart_id', $this->pendingCart->id)->sum('quantity');
+        return CartItem::where('cart_id', $this->pendingCart->id)->sum('quantity');
     }
 }

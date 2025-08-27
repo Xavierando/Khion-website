@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import { Cart_item, Product } from '@/types';
+import { CartItem, Product } from '@/types';
 import { computed, provide, ref } from 'vue';
 import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/vue/16/solid';
 import { TrashIcon } from '@heroicons/vue/24/outline';
@@ -57,7 +57,7 @@ const props = defineProps<{
   class?: HTMLAttributes['class'],
   product: Product,
   scenario: string,
-  item?: Cart_item,
+  item?: CartItem,
 }>()
 
 const visibleRef = ref(false)

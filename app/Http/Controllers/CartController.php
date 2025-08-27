@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductResource;
-use App\Models\Cart_item;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +14,7 @@ class CartController extends Controller
 {
     public function index(Request $request)
     {
-        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
+        $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
         // return $cart;
         // return new CartResource($cart);
 
@@ -30,9 +30,9 @@ class CartController extends Controller
             'product' => 'required|exists:products,id',
             'quantity' => 'required|integer:strict',
         ]);
-        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
+        $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
         $product = Product::find($validated['product']);
-        $item = $cart->cart_items->first(fn ($v) => $v['product_id'] == $product->id);
+        $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
 
         if (
             $validated['quantity'] <= $product->availableQuantity() + $item->quantity &&
@@ -62,13 +62,13 @@ class CartController extends Controller
             'quantity' => 'required|integer:strict',
         ]);
 
-        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
+        $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
         $product = Product::find($validated['product']);
 
         if ($validated['quantity'] <= $product->availableQuantity()) {
-            $item = $cart->cart_items->first(fn ($v) => $v['product_id'] == $product->id);
+            $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
             if ($item == null) {
-                Cart_item::create([
+                CartItem::create([
                     'cart_id' => $cart->id,
                     'product_id' => $validated['product'],
                     'quantity' => $validated['quantity'],
@@ -88,8 +88,8 @@ class CartController extends Controller
             'product' => 'required|exists:products,id',
         ]);
 
-        $cart = $request->user()->pendingCart()->with(['cart_items'])->first();
-        $item = $cart->cart_items->first(fn ($v) => $v['product_id'] == $validated['product']);
+        $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
+        $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $validated['product']);
         $item->delete();
 
         return Inertia::render('Cart', [

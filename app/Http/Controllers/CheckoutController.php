@@ -14,10 +14,10 @@ class CheckoutController extends Controller
     {
         $cart = $request->user()->pendingCart()->first();
 
-        $itemsToDelete = $cart->cart_items()->where('quantity', 0)->get();
+        $itemsToDelete = $cart->CartItems()->where('quantity', 0)->get();
         $itemsToDelete->each(fn ($i) => $i->delete());
 
-        $items = $cart->cart_items()->with('product')->get();
+        $items = $cart->CartItems()->with('product')->get();
 
         $order = Order::create([
             'status' => OrderStatus::pending,

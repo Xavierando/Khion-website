@@ -86,13 +86,13 @@ export interface Image {
     caption: string;
 }
 
-export interface Cart_item {
+export interface CartItem {
     id:number;
     product: Product;
     quantity: number;
 }
 
 export interface Cart {
-    items: Array<Cart_item>
+    items: Array<CartItem>
 }
 

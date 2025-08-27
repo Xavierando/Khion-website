@@ -15,7 +15,7 @@ class CartResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'items' => CartItemResource::collection($this->cart_items()->with('product')->get()),
+            'items' => CartItemResource::collection($this->CartItems()->with('product')->get()),
         ];
     }
 }
