@@ -9,6 +9,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductGallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -37,11 +38,11 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        if (!$request->user()->isAdmin) {
+        if (! $request->user()->isAdmin) {
             return redirect()->back();
         }
 
-        $Product = new Product();
+        $Product = new Product;
         $Product->code = $request->input('code');
         $Product->name = $request->input('name');
         $Product->description = $request->input('description');
@@ -52,12 +53,12 @@ class ProductController extends Controller
         $Product->save();
 
         $i = 0;
-        while ($request->hasFile('images.' . $i) && $i < 10) {
-            $path = Storage::disk('images')->put('/product', $request->file('images.' . $i));
+        while ($request->hasFile('images.'.$i) && $i < 10) {
+            $path = Storage::disk('images')->put('/product', $request->file('images.'.$i));
 
             ProductGallery::create([
                 'product_id' => $Product->id,
-                'fsname' => $path
+                'fsname' => $path,
             ]);
 
             $i++;
@@ -71,7 +72,7 @@ class ProductController extends Controller
      */
     public function show(Request $request, Product $product)
     {
-        $cart = $request?->user()->pendingCart()->with(['cart_items'])->first() ?? [];
+        $cart = $request?->user()->pendingCart()->with(['CartItems'])->first() ?? [];
 
         return Inertia::render('Products/show', [
             'product' => ProductResource::make($product),
@@ -85,7 +86,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         return Inertia::render('dashboard/products/edit', [
-            'products' => ProductResource::collection(Product::all())
+            'products' => ProductResource::collection(Product::all()),
         ]);
     }
 
@@ -94,56 +95,57 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        if (!$request->user()->isAdmin) {
+        if (! $request->user()->isAdmin) {
             return redirect()->back();
         }
 
-
-        if($request->input('update') == 'code' && $request->has('code')){
+        if ($request->input('update') == 'code' && $request->has('code')) {
             $product->code = $request->input('code');
         }
 
-        if($request->input('update') == 'name' && $request->has('name')){
+        if ($request->input('update') == 'name' && $request->has('name')) {
             $product->name = $request->input('name');
             $product->updateStripeInfo();
         }
 
-        if($request->input('update') == 'description' && $request->has('description')){
+        if ($request->input('update') == 'description' && $request->has('description')) {
             $product->description = $request->input('description');
             $product->updateStripeInfo();
         }
 
-        if($request->input('update') == 'base_price' && $request->has('base_price')){
+        if ($request->input('update') == 'base_price' && $request->has('base_price')) {
             $product->base_price = $request->input('base_price');
             $product->updateStripePrice();
         }
 
-        if($request->input('update') == 'quantity' && $request->has('quantity')){
+        if ($request->input('update') == 'quantity' && $request->has('quantity')) {
             $product->quantity = $request->input('quantity');
         }
-        
+
         $product->save();
 
         $i = 0;
         $path = '';
-        while ($request->hasFile('images.' . $i) && $i < 10) {
-            $path = Storage::disk('images')->put('product/', $request->file('images.' . $i));
+        while ($request->hasFile('images.'.$i) && $i < 10) {
+            $path = Storage::disk('images')->put('product/', $request->file('images.'.$i));
 
             ProductGallery::create([
                 'product_id' => $product->id,
-                'fsname' => $path
+                'fsname' => $path,
             ]);
 
             $i++;
         }
 
-        if($request->input('update') == 'image' && $request->has('deleteImage')){
-            $image = ProductGallery::find('fsname',$request->input('deleteImage'));
-            if($image){
+        if ($request->input('update') == 'image' && $request->has('deleteImage')) {
+            $fsname = substr($request->input('deleteImage'), strlen('/images/'));
+            Log::debug($fsname);
+            $image = ProductGallery::firstWhere('fsname', $fsname);
+            if ($image) {
                 $image->delete();
                 Storage::disk('images')->delete($request->input('deleteImage'));
             }
-        }    
+        }
 
         return Inertia::render('dashboard/products/edit', ['status' => 'success', 'imgpath' => $path]);
     }
@@ -151,13 +153,14 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request,Product $product)
+    public function destroy(Request $request, Product $product)
     {
-        if (!$request->user()->isAdmin) {
+        if (! $request->user()->isAdmin) {
             return redirect()->back();
         }
 
         $product->delete();
+
         return redirect()->route('dashboard.products');
     }
 }

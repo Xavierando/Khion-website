@@ -57,7 +57,7 @@ function onDrop(files: File[] | null) {
             'file': files[0],
             'src': URL.createObjectURL(files[0]),
         });
-        submitData('image');
+        submitData('images');
     }
 }
 
@@ -192,6 +192,20 @@ function eliminaProdotto(product: Product) {
     useForm({}).delete(route('dashboard.products.delete', { product: product.id }));
 }
 
+function eliminaImmagine(src: string) {
+    imageGallery.value = imageGallery.value.filter(($v: {
+        file: File | null;
+        src: string;
+    }) => $v.src != src)
+
+    console.log(imageGallery.value);
+
+    if (PData.id !== null) {
+        PData.deleteImage = src;
+        submitData('image');
+    }
+}
+
 </script>
 
 
@@ -229,9 +243,11 @@ function eliminaProdotto(product: Product) {
             </div>
             <div v-if="formAddProduct" class="flex flex-col pr-3">
                 <div class="flex flex-row justify-between">
-                    <a :href="route('dashboard.products')"><button class="p-2 rounded-sm bg-blue-500 h-fit w-fit cursor-pointer hover:bg-blue-600">Torna ai
-                        Prodotti</button></a>
-                    <button class="p-2 rounded-sm bg-blue-500 h-fit w-fit cursor-pointer hover:bg-blue-600" @click="addProduct()">Crea Nuovo Prodotto</button>
+                    <a :href="route('dashboard.products')"><button
+                            class="p-2 rounded-sm bg-blue-500 h-fit w-fit cursor-pointer hover:bg-blue-600">Torna ai
+                            Prodotti</button></a>
+                    <button class="p-2 rounded-sm bg-blue-500 h-fit w-fit cursor-pointer hover:bg-blue-600"
+                        @click="addProduct()">Crea Nuovo Prodotto</button>
                 </div>
                 <div class="flex flex-col grow-[10vw]">
                     <label>Code</label>
@@ -272,7 +288,7 @@ function eliminaProdotto(product: Product) {
 
                     <div v-for="image in imageGallery" class="relative">
                         <img :src="image.src" class="min-h-24" />
-                        <TrashIcon
+                        <TrashIcon @click="eliminaImmagine(image.src)"
                             class="absolute bg-white/30 top-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
                 </div>
