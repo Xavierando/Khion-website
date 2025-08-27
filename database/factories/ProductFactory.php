@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         $json = json_decode('{"options":[{"type":"select","name":"size","options":[{"name":"150 cm","price":0},{"name":"160 cm","price":0},{"name":"170 cm","price":0}]},{"type":"select","name":"hardness","options":[{"name":"flexible","price":0},{"name":"normal","price":0},{"name":"stiff","price":0}]}]}');
 
         return [
-            'code' => fake()->word(),
+            'code' => array_reduce(fake()->words(2), fn ($c, $i) => $c.' '.$i),
             'name' => array_reduce(fake()->words(2), fn ($c, $i) => $c.' '.$i),
             'description' => fake()->text(600),
             'base_price' => fake()->numberBetween(100, 900),

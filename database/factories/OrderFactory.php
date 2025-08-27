@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\OrderStatus;
+use App\Models\Cart;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,11 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'total' => fake()->numberBetween(100, 900),
+            'status' => fake()->randomElement(OrderStatus::cases()),
+            'stripe_checkout_id' => '',
+            'user_id' => 2,
+            'cart_id' => Cart::inRandomOrder()->first(),
         ];
     }
 }

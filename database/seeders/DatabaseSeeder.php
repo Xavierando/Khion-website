@@ -2,7 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CartStatus;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Comment;
+use App\Models\Order;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductGallery;
@@ -25,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'isTeam' => true,
             'role' => 'Mastro Artigiano',
         ]);
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Xavier',
             'email' => 'savio@example.com',
             'isAdmin' => true,
@@ -42,6 +46,19 @@ class DatabaseSeeder extends Seeder
         $tags = Tag::all();
         Post::factory(2)
             ->recycle($tags)
+            ->create();
+
+        $carts = Cart::factory(30)
+            ->recycle($user)
+            ->has(
+                CartItem::factory(3)
+            )
+            ->create(['status' => CartStatus::ordered]);
+
+        Order::factory()
+            ->count(30)
+            ->recycle($user)
+            ->recycle($carts)
             ->create();
     }
 }
