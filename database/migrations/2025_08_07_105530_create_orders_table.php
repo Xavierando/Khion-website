@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('stripe_checkout_id')->nullable();
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Cart::class);
+            $table->foreignIdFor(Cart::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +30,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('orders');
-        Schema::dropIfExists('order_items');
     }
 };
