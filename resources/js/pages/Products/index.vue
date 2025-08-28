@@ -3,11 +3,20 @@ import Card from '@/components/ui/card/CardSnow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Cart, Product } from '@/types';
+import { computed } from 'vue';
 
 const props = defineProps<{
     products?: Array<Product>,
     cart?: Cart,
 }>()
+
+const productSorted = computed(() => props.products?.sort((a, b): number => {
+    if ((a.quantity == 0 && b.quantity == 0) || (a.quantity > 0 && b.quantity > 0)) {
+        return (a.created > b.created) ? -1 : 1;
+    } else {
+        return (a.quantity > 0) ? -1 : 1;
+    }
+}))
 </script>
 
 <template>
@@ -30,7 +39,7 @@ const props = defineProps<{
                         nostri
                         prodotti</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card v-for="product in props.products" :product="product" :cart="cart" :key="product.id">
+                        <Card v-for="product in productSorted" :product="product" :cart="cart" :key="product.id">
                         </Card>
                     </div>
                 </div>
