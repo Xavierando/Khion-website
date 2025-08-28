@@ -6,12 +6,14 @@ import { computed, ref } from 'vue';
 import { useDropZone } from '@vueuse/core';
 import TextBox from '@/components/ui/input/TextBox.vue';
 import { TrashIcon, PlusIcon } from '@heroicons/vue/24/outline';
-import { Image, Product } from '@/types';
+import { Image, Product, Tag } from '@/types';
+import axios from 'axios';
 
 const props = defineProps<{
     status?: string,
     imgpath?: string,
     products?: Product[],
+    tag?: Tag,
 }>()
 
 const productSorted = computed(() => props.products?.sort((a, b): number => {
@@ -28,25 +30,6 @@ const imageGallery = ref<Array<{
     file: File | null;
     src: string;
 }>>([]);
-
-const UserData = useForm({
-    name: page.props.auth.user?.name,
-    role: page.props.auth.user?.role,
-    bio: page.props.auth.user?.bio,
-})
-
-const UserImg = useForm<{
-    _method: string;
-    pic: File | null;
-}>({
-    _method: 'put',
-    pic: null,
-})
-
-const UserPsw = useForm({
-    oldpsw: '',
-    newpsw: '',
-})
 
 const dropZonePic = ref<HTMLDivElement>()
 
@@ -67,25 +50,6 @@ useDropZone(dropZonePic, {
     preventDefaultForUnhandled: false,
 })
 
-const submitUser = () => {
-    UserData.put(route('dashboard.user.update'), {
-        onSuccess: () => {
-            if (props.status === 'success') {
-                formAddProduct.value = false;
-                console.log('aok')
-            }
-            console.log('ok')
-        }
-    })
-}
-
-const submitUserImg = () => {
-    UserImg.post(route('dashboard.user.update'))
-}
-const submitUserPsw = () => {
-    UserPsw.put(route('dashboard.user.update'))
-}
-
 const inputSearch = ref('');
 const formAddProduct = ref(false)
 
@@ -99,6 +63,7 @@ const PData = useForm<{
     quantity: number;
     images: File[];
     deleteImage: string;
+    tag: number;
     update: string;
 }>({
     _method: 'post',
@@ -110,6 +75,7 @@ const PData = useForm<{
     quantity: 0,
     images: [],
     deleteImage: '',
+    tag: 0,
     update: '',
 })
 
@@ -158,6 +124,9 @@ const submitData = (up: string) => {
                         return v;
                     });
                 }
+                if (props.tag){
+                    tags.value.push(props.tag);
+                }
             }
         })
     }
@@ -171,7 +140,7 @@ function addImageByInput(e: Event) {
         }
     }
 }
-
+const tags = ref<Tag[]>([]);
 function modificaProdotto(product: Product) {
     PData.id = product.id;
     PData.code = product.code;
@@ -185,6 +154,7 @@ function modificaProdotto(product: Product) {
         'src': v.src,
     })
     );
+    tags.value = product.tags;
     formAddProduct.value = true;
 }
 
@@ -204,6 +174,41 @@ function eliminaImmagine(src: string) {
         PData.deleteImage = src;
         submitData('image');
     }
+}
+const tagsSearch = ref<Tag[]>([]);
+function getTags(e: Event) {
+    if (e.target instanceof HTMLInputElement) {
+        axios.get(route('tags'), {
+            'params': {
+                'tag': e.target.value
+            }
+        })
+            .then(res => {
+                tagsSearch.value = res.data.tags;
+            })
+    }
+}
+
+const inputTag = ref('');
+
+function createTag() {
+    axios.post(route('tags'), {
+        'params': {
+            'tag': inputTag.value
+        }
+    })
+        .then(res => {
+            if (res.data.tag) {
+                addTag(res.data.tag.id);
+            }
+        })
+}
+
+function addTag(id: number) {
+    PData.tag = id;
+    tags.value = tags.value.filter((v: Tag) => v.id !== id);
+    inputTag.value = '';
+    submitData('tag');
 }
 
 </script>
@@ -273,6 +278,22 @@ function eliminaImmagine(src: string) {
                     <Input type="number" class="max-w-sm mb-3" v-model="PData.quantity"
                         @change="submitData('quantity')" />
                     <div value="1" class="text-red-700 text-sm" v-if="PData.errors.quantity">{{ PData.errors.quantity }}
+                    </div>
+
+                    <label>Tags</label>
+                    <div class="relative">
+                        <Input type="string" class="max-w-sm mb-3" v-model="inputTag" @input="getTags($event)" />
+                        <ul v-if="inputTag" class="absolute top-h-full bg-green-200 gap-2 w-sm z-1 p-2 rounded-md">
+                            <li class="hover:bg-green-300 p-1 cursor-pointer pl-2" v-for="tag in tagsSearch"
+                                :key="tag.id" @click="addTag(tag.id)">{{ tag.tag }}</li>
+                            <li class="hover:bg-green-300 p-1 cursor-pointer pl-2 text-gray-500" @click="createTag()">
+                                crea nuovo tag</li>
+
+                        </ul>
+                        <ul class="bg-gray-200 gap-2 max-w-sm z-1 p-2 rounded-md flex flex-row flex-wrap">
+                            <li class="hover:bg-blue-300 p-1 rounded-sm px-2" v-for="tag in tags" :key="tag.id"
+                                @click="addTag(tag.id)">{{ tag.tag }}</li>
+                        </ul>
                     </div>
                 </div>
                 <div ref="dropZonePic"

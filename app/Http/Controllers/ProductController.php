@@ -8,6 +8,7 @@ use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductGallery;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -53,8 +54,8 @@ class ProductController extends Controller
         $Product->save();
 
         $i = 0;
-        while ($request->hasFile('images.'.$i) && $i < 10) {
-            $path = Storage::disk('images')->put('/product', $request->file('images.'.$i));
+        while ($request->hasFile('images.' . $i) && $i < 10) {
+            $path = Storage::disk('images')->put('/product', $request->file('images.' . $i));
 
             ProductGallery::create([
                 'product_id' => $Product->id,
@@ -122,12 +123,26 @@ class ProductController extends Controller
             $product->quantity = $request->input('quantity');
         }
 
+        if ($request->input('update') == 'tag' && $request->has('tag')) {
+            Log::debug('ciao');
+            $tag = Tag::find($request->input('tag'));
+            $haveTag = $product->tags()->where('id', $tag->id)->count();
+            if ($haveTag == 0) {
+                $product->tags()->attach($tag);
+                $tag = ['tag' => $tag];
+            } else {
+                Log::debug('nino');
+                $product->tags()->detach($tag);
+                $tag = ['tag' => ''];
+            }
+        }
+
         $product->save();
 
         $i = 0;
         $path = '';
-        while ($request->hasFile('images.'.$i) && $i < 10) {
-            $path = Storage::disk('images')->put('product/', $request->file('images.'.$i));
+        while ($request->hasFile('images.' . $i) && $i < 10) {
+            $path = Storage::disk('images')->put('product/', $request->file('images.' . $i));
 
             ProductGallery::create([
                 'product_id' => $product->id,
@@ -147,7 +162,7 @@ class ProductController extends Controller
             }
         }
 
-        return Inertia::render('dashboard/products/edit', ['status' => 'success', 'imgpath' => $path]);
+        return Inertia::render('dashboard/products/edit', ['status' => 'success', 'imgpath' => $path, ...$tag]);
     }
 
     /**

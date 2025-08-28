@@ -5,6 +5,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/products', [ProductController::class, 'store']);
     Route::put('/dashboard/products/{product}', [ProductController::class, 'update'])->name('dashboard.products.update');
     Route::delete('/dashboard/products/{product}', [ProductController::class, 'destroy'])->name('dashboard.products.delete');
+
+    Route::get('/tags', [TagController::class, 'index'])->name('tags');
+    Route::post('/tags', [TagController::class, 'store']);
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
