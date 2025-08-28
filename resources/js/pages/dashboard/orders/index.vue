@@ -12,8 +12,21 @@
                             order.status }}</div>
                     </div>
                     <div class="flex flex-row">
+                        <div v-if="order.status === 'pending' && !page.props.auth.user.isAdmin" @click="ritentaPagamento(order.id)">
+                            <button
+                                class="text-sm font-bold bg-gray-200 p-1 px-2 cursor-pointer hover:bg-gray-400 transiction-bg duration-200"
+                                @click="ritentaPagamento(order.id)">Ritenta Pagamento</button>
+                            
+                        </div>
+                        <div v-if="order.status === 'pending'" >
+                            <button
+                                class="text-sm font-bold bg-gray-200 p-1 px-2 cursor-pointer hover:bg-gray-400 transiction-bg duration-200"
+                                @click="annullaOrdine(order.id)">Annulla ordine</button>
+                            
+                        </div>
                         <div v-if="page.props.auth.user.isAdmin" class="mx-3 flex flex-row gap-2">
-                            <button class="text-sm font-bold bg-red-200 p-1 px-2 cursor-pointer hover:bg-red-400 transiction-bg duration-200"
+                            <button
+                                class="text-sm font-bold bg-red-200 p-1 px-2 cursor-pointer hover:bg-red-400 transiction-bg duration-200"
                                 v-for="bstatus in order.statusOptions" :key="bstatus"
                                 @click="changeStatus(bstatus, order.id)">{{ bstatus }}</button>
                         </div>
@@ -157,5 +170,14 @@ const submitUserImg = () => {
 }
 const submitUserPsw = () => {
     UserPsw.put(route('dashboard.user.update'))
+}
+
+function ritentaPagamento(id: number) {
+    useForm({}).post(route('checkout.retry', { order: id }))
+}
+
+function annullaOrdine(id:number){
+    useForm({}).delete(route('dashboard.order.delete', { order: id }))
+
 }
 </script>

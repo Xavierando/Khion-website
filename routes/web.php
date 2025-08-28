@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard/order', [OrderController::class, 'index'])->name('dashboard.order');
     Route::put('/dashboard/order/{order}', [OrderController::class, 'update'])->name('dashboard.order.update');
+    Route::delete('/dashboard/order/{order}', [OrderController::class, 'delete'])->name('dashboard.order.delete');
 
     Route::get('/dashboard/products', [ProductController::class, 'edit'])->name('dashboard.products');
     Route::post('/dashboard/products', [ProductController::class, 'store']);
@@ -34,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'submit'])->name('checkout');
+    Route::post('/checkout/retry/{order}', [CheckoutController::class, 'retry'])->name('checkout.retry');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout-success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout-cancel');
 

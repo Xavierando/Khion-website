@@ -7,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Laravel\Cashier\Cashier;
 
 class CheckoutController extends Controller
 {
@@ -15,16 +16,16 @@ class CheckoutController extends Controller
         $cart = $request->user()->pendingCart()->first();
 
         $itemsToDelete = $cart->CartItems()->where('quantity', 0)->get();
-        $itemsToDelete->each(fn ($i) => $i->delete());
+        $itemsToDelete->each(fn($i) => $i->delete());
 
         $items = $cart->CartItems()->with('product')->get();
 
         $order = Order::create([
             'status' => OrderStatus::pending,
             'total' => $items
-                ->reduce(fn ($carry, $item) => $carry + $item['quantity'] * $item['product']['base_price']),
+                ->reduce(fn($carry, $item) => $carry + $item['quantity'] * $item['product']['base_price']),
             'user_id' => $request->user()->id,
-            'cart_id' => $cart->id,
+            'cart_id' => $cart->id
         ]);
 
         $cart->status = CartStatus::ordered;
@@ -36,11 +37,32 @@ class CheckoutController extends Controller
             ];
         })->toArray();
 
-        return Inertia::location($request->user()->checkout($checkout, [
-            'success_url' => route('checkout-success').'?session_id={CHECKOUT_SESSION_ID}',
+        $checkoutSession = $request->user()->checkout($checkout, [
+            'success_url' => route('checkout-success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout-cancel'),
             'metadata' => ['order_id' => $order->id],
-        ])->url);
+        ]);
+
+        $order->stripe_checkout_id = $checkoutSession->id;
+        $order->save();
+
+        return Inertia::location($checkoutSession->url);
+    }
+
+    public function retry(Request $request, Order $order)
+    {
+        $checkoutSession = Cashier::stripe()->checkout->sessions->retrieve($order->stripe_checkout_id);
+        if (!$checkoutSession) {
+            return redirect()->back();
+        }
+        if ($order->status == OrderStatus::pending && $checkoutSession['payment_status'] == 'paid') {
+            $order->status = OrderStatus::pending;
+            $order->save();
+        } else {
+            return Inertia::location($checkoutSession->url);
+        }
+        
+        return redirect()->back();
     }
 
     public function success(Request $request)
