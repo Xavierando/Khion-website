@@ -12,6 +12,10 @@
               @hide="onHide"></vue-easy-lightbox>
           </div>
           <div>
+            <div class="grow mb-4 flex flex-row flex-wrap justify-between gap-2 items-start">
+              <button class="text-gray-600 text-sm bg-blue-200 rounded-sm p-1 px-2" v-for="tag in product.tags"
+                :key="tag.id">{{ tag.tag }}</button>
+            </div>
             <div>{{ product.description }}</div>
             <div class="flex flex-row-reverse  items-center justify-between">
               <div class="flex flex-row-reverse  items-center ">
