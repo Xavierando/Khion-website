@@ -50,23 +50,19 @@ export interface ConfOption {
 }
 
 export interface Productconfiguration {
+    name: string;
     options:
     [
-        {
-            name: string;
-            options:
-            [
-                ConfOption
-            ];
-            ref: string;
-            type: string;
-        }
-    ]
+        ConfOption
+    ];
+    ref: string;
+    type: string;
+    option: string;
 }
 
 export interface Tag {
-    id:number;
-    tag:string;
+    id: number;
+    tag: string;
 }
 
 export interface Product {
@@ -80,9 +76,9 @@ export interface Product {
     base_quantity: number;
     short: string;
     link: string;
-    configuration: Productconfiguration;
+    configuration: Productconfiguration[];
     images: array<Image>;
-    default_images:Image;
+    default_images: Image;
     created: string;
     tags: Tag[];
 }
@@ -93,7 +89,7 @@ export interface Image {
 }
 
 export interface CartItem {
-    id:number;
+    id: number;
     product: Product;
     quantity: number;
 }
