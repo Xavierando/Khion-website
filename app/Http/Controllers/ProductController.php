@@ -73,11 +73,11 @@ class ProductController extends Controller
      */
     public function show(Request $request, Product $product)
     {
-        $cart = $request?->user()->pendingCart()->with(['CartItems'])->first() ?? [];
+        $cart = $request?->user()?->pendingCart()->with(['CartItems'])->first();
 
         return Inertia::render('Products/show', [
             'product' => ProductResource::make($product),
-            'cart' => new CartResource($cart),
+            'cart' => ($cart)?new CartResource($cart):['items' => []],
         ]);
     }
 
@@ -123,6 +123,7 @@ class ProductController extends Controller
             $product->quantity = $request->input('quantity');
         }
 
+        $tag = ['tag' => ''];
         if ($request->input('update') == 'tag' && $request->has('tag')) {
             Log::debug('ciao');
             $tag = Tag::find($request->input('tag'));
