@@ -65,6 +65,7 @@ export interface Productconfiguration {
 }
 
 export interface Tag {
+    id:number;
     tag:string;
 }
 
