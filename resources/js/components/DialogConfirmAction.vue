@@ -1,6 +1,6 @@
 <template>
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="closeModal" class="relative z-10">
+    <Dialog as="div" @close="closeModal();$emit('changeStatus',false)" class="relative z-10">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -62,7 +62,7 @@
   </TransitionRoot>
 </template>
 
-<script setup>
+<script setup  lang="ts">
 import { inject } from 'vue'
 import {
   TransitionRoot,
@@ -74,10 +74,14 @@ import {
 
 
 
-const isOpen = inject('ConfermaCarrello');
+const isOpen :any= inject('ConfermaCarrello');
 
-function setIsOpen(value) {
+function setIsOpen(value:boolean) {
     isOpen.value = value
+}
+
+function closeModal(){
+    isOpen.value = false;
 }
 
 
