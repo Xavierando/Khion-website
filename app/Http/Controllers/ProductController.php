@@ -54,8 +54,8 @@ class ProductController extends Controller
         $Product->save();
 
         $i = 0;
-        while ($request->hasFile('images.' . $i) && $i < 10) {
-            $path = Storage::disk('images')->put('/product', $request->file('images.' . $i));
+        while ($request->hasFile('images.'.$i) && $i < 10) {
+            $path = Storage::disk('images')->put('/product', $request->file('images.'.$i));
 
             ProductGallery::create([
                 'product_id' => $Product->id,
@@ -77,7 +77,7 @@ class ProductController extends Controller
 
         return Inertia::render('Products/show', [
             'product' => ProductResource::make($product),
-            'cart' => ($cart)?new CartResource($cart):['items' => []],
+            'cart' => ($cart) ? new CartResource($cart) : ['items' => []],
         ]);
     }
 
@@ -142,8 +142,8 @@ class ProductController extends Controller
 
         $i = 0;
         $path = '';
-        while ($request->hasFile('images.' . $i) && $i < 10) {
-            $path = Storage::disk('images')->put('product/', $request->file('images.' . $i));
+        while ($request->hasFile('images.'.$i) && $i < 10) {
+            $path = Storage::disk('images')->put('product/', $request->file('images.'.$i));
 
             ProductGallery::create([
                 'product_id' => $product->id,

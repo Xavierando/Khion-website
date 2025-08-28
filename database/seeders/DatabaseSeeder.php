@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
         Tag::factory()->create(['tag' => 'principianti']);
 
         $tags = Tag::all();
-        //$tags = [...$tags,...$tags,...$tags,...$tags,...$tags,...$tags];
+        // $tags = [...$tags,...$tags,...$tags,...$tags,...$tags,...$tags];
         Product::factory()
             ->count(5)
             ->recycle($tags)
@@ -68,7 +68,6 @@ class DatabaseSeeder extends Seeder
                 CartItem::factory(3)
             )
             ->create(['status' => CartStatus::ordered]);
-
 
         Order::factory()
             ->count(30)
