@@ -29,24 +29,38 @@ class DatabaseSeeder extends Seeder
             'isTeam' => true,
             'role' => 'Mastro Artigiano',
         ]);
-        $user = User::factory()->create([
+        User::factory()->create([
             'name' => 'Xavier',
             'email' => 'savio@example.com',
             'isAdmin' => true,
             'isTeam' => true,
             'role' => 'Mastro Diversamente Occupato',
         ]);
+        User::factory(5);
 
-        Product::factory(5)
-            ->has(Tag::factory())
+        Tag::factory()->create(['tag' => '150cm']);
+        Tag::factory()->create(['tag' => '160cm']);
+        Tag::factory()->create(['tag' => '170cm']);
+        Tag::factory()->create(['tag' => 'morbida']);
+        Tag::factory()->create(['tag' => 'rigida']);
+        Tag::factory()->create(['tag' => 'acrobatica']);
+        Tag::factory()->create(['tag' => 'principianti']);
+
+        $tags = Tag::all();
+        //$tags = [...$tags,...$tags,...$tags,...$tags,...$tags,...$tags];
+        Product::factory()
+            ->count(5)
+            ->recycle($tags)
+            ->hasAttached($tags->random(5))
             ->has(Comment::factory(1))
             ->has(ProductGallery::factory(3))
             ->create();
 
-        $tags = Tag::all();
         Post::factory(2)
             ->recycle($tags)
             ->create();
+
+        $user = User::all();
 
         $carts = Cart::factory(30)
             ->recycle($user)
@@ -54,6 +68,7 @@ class DatabaseSeeder extends Seeder
                 CartItem::factory(3)
             )
             ->create(['status' => CartStatus::ordered]);
+
 
         Order::factory()
             ->count(30)
