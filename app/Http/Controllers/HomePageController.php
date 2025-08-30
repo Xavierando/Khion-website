@@ -17,12 +17,17 @@ class HomePageController extends Controller
     {
 
         $teams = UserResource::collection(User::where('isTeam', '=', '1')->get());
-        $products = ProductResource::collection(Product::orderBy('created_at', 'desc')->take(4)->get());
+        $products = ProductResource::collection(Product::orderBy('created_at', 'desc')->get());
+        $fproducts = $products->filter(function ($v) {
+            return $v->availableQuantity() > 0;
+        })->shift(4);
 
-        return Inertia::render('Welcome', [
-            'teams' => $teams,
-            'products' => $products,
-        ]
+        return Inertia::render(
+            'Welcome',
+            [
+                'teams' => $teams,
+                'products' => $fproducts,
+            ]
         );
     }
 }
