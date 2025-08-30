@@ -10,9 +10,10 @@ use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ProductController extends Controller
 {
@@ -106,12 +107,12 @@ class ProductController extends Controller
 
         if ($request->input('update') == 'name' && $request->has('name')) {
             $product->name = $request->input('name');
-            $product->updateStripeInfo();
+            $product->updateStripePrice();
         }
 
         if ($request->input('update') == 'description' && $request->has('description')) {
             $product->description = $request->input('description');
-            $product->updateStripeInfo();
+            // $product->updateStripePrice();
         }
 
         if ($request->input('update') == 'base_price' && $request->has('base_price')) {
@@ -125,14 +126,12 @@ class ProductController extends Controller
 
         $tag = ['tag' => ''];
         if ($request->input('update') == 'tag' && $request->has('tag')) {
-            Log::debug('ciao');
             $tag = Tag::find($request->input('tag'));
             $haveTag = $product->tags()->where('id', $tag->id)->count();
             if ($haveTag == 0) {
                 $product->tags()->attach($tag);
                 $tag = ['tag' => $tag];
             } else {
-                Log::debug('nino');
                 $product->tags()->detach($tag);
                 $tag = ['tag' => ''];
             }
@@ -143,6 +142,9 @@ class ProductController extends Controller
         $i = 0;
         $path = '';
         while ($request->hasFile('images.'.$i) && $i < 10) {
+            $manager = new ImageManager(new Driver);
+            $image = $manager->read($request->file('images.'.$i));
+            $image = $image->scaleDown(600, 600)->toJpeg(90)->save($request->file('images.'.$i));
             $path = Storage::disk('images')->put('product/', $request->file('images.'.$i));
 
             ProductGallery::create([
@@ -155,11 +157,10 @@ class ProductController extends Controller
 
         if ($request->input('update') == 'image' && $request->has('deleteImage')) {
             $fsname = substr($request->input('deleteImage'), strlen('/images/'));
-            Log::debug($fsname);
             $image = ProductGallery::firstWhere('fsname', $fsname);
             if ($image) {
                 $image->delete();
-                Storage::disk('images')->delete($request->input('deleteImage'));
+                // Storage::disk('images')->delete($request->input('deleteImage'));
             }
         }
 
