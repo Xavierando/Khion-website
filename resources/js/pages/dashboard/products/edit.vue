@@ -124,7 +124,7 @@ const submitData = (up: string) => {
                         return v;
                     });
                 }
-                if (props.tag){
+                if (props.tag) {
                     tags.value.push(props.tag);
                 }
             }
@@ -193,9 +193,7 @@ const inputTag = ref('');
 
 function createTag() {
     axios.post(route('tags'), {
-        'params': {
-            'tag': inputTag.value
-        }
+        'tag': inputTag.value
     })
         .then(res => {
             if (res.data.tag) {
