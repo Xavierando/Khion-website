@@ -6,10 +6,15 @@
         <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">{{
           product.name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <img @click="onShow()" class="w-full h-full" :src="product.default_images?.src" />
-            <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef"
-              @hide="onHide"></vue-easy-lightbox>
+          <div class="grid grid-cols-3 items-center">
+            <div class="col-start-1 col-end-4">
+              <img @click="onShow(0)" class="w-full" :src="product.default_images?.src" />
+              <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef"
+                @hide="onHide"></vue-easy-lightbox>
+            </div>
+            <div v-for="(img, index) in imgGallery" :key="img.id">
+              <img @click="onShow(index+1)" class="w-full" :src="img.src" />
+            </div>
           </div>
           <div>
             <div class="grow mb-4 flex flex-row flex-wrap justify-between gap-2 items-start">
@@ -18,7 +23,7 @@
             </div>
             <div>{{ product.description }}</div>
             <div class="flex flex-row-reverse  items-center justify-between">
-              <div class="flex flex-row-reverse  items-center ">
+              <div class="flex flex-row-reverse  items-center  my-6">
                 <button v-if="!item"
                   class="cursor-pointer bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 m-4 px-4 w-fit rounded"
                   @click="addToCart()">
@@ -32,7 +37,7 @@
                   <div>{{ quantity * product.base_price }}</div> &euro;
                 </div>
               </div>
-              <div class="flex flex-row-reverse  items-center gap-4 ml-3 mt-6">
+              <div class="flex flex-row-reverse  items-center gap-4 ml-3">
                 <PlusCircleIcon :class="['h-8 cursor-pointer', { 'opacity-50': quantityLeft === 0 }]"
                   @click="addquantity()" />
                 <div>{{ quantity }}</div>
@@ -64,15 +69,31 @@ const props = defineProps<{
   item?: CartItem,
 }>()
 
-const visibleRef = ref(false)
-const indexRef = ref(0) // default 0
-//console.log(props.product.images.map((v) => v.src));
-const imgsRef = ref(props.product.images.map((v: {
-  src: string;
-}) => v.src))
-//const imgsRef = ref([])
+const visibleRef = ref(false);
+const indexRef = ref(0); // default 0
 
-const onShow = () => {
+
+const imgDefault = ref(props.product.images.find((v: {
+  src: string;
+}) => v.src === props.product.default_images.src));
+
+const imgCarousel = computed(() => [
+  imgDefault.value,
+  ...props.product.images.filter((v: {
+    src: string;
+  }) => v.src !== props.product.default_images.src)
+]);
+
+const imgsRef = ref(imgCarousel.value.map((v: {
+  src: string;
+}) => v.src));
+
+const imgGallery = computed(() => [
+  ...imgCarousel.value.slice(1)
+]);
+
+const onShow = (index: number) => {
+  indexRef.value = index
   visibleRef.value = true
 }
 
@@ -110,15 +131,15 @@ const subquantity = () => {
   }
 }
 
-const CartItem = useForm({
+const FormCartItem = useForm({
   'product': props.product.id,
   'quantity': 0
 });
 
 const addToCart = () => {
   ConfermaCarrello.value = true;
-  CartItem.quantity = quantity.value;
-  CartItem.post(route('cart.create'), { /*preserveState: true*/ });
+  FormCartItem.quantity = quantity.value;
+  FormCartItem.post(route('cart.create'), { /*preserveState: true*/ });
 };
 
 const ConfermaCarrello = ref(false)
