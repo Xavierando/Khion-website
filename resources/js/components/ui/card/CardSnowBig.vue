@@ -2,7 +2,7 @@
   <Transition appear>
     <section>
       <Dialog v-model="ConfermaCarrello" />
-      <div class="lg:max-w-6xl p-5 mx-auto bg-white/20 rounded-lg text-black">
+      <div class="lg:max-w-6xl px-5 pb-5 mx-auto bg-white/20 rounded-lg text-black">
         <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">{{
           product.name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
