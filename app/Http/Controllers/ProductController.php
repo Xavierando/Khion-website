@@ -51,6 +51,7 @@ class ProductController extends Controller
         $product->description = $request->input('description');
         $product->base_price = $request->input('base_price');
         $product->quantity = $request->input('quantity');
+        $product->available_quantity = $request->input('quantity');
         $product->configuration = '{"options":[]}';
         $product->genereteStripeID();
         $product->save();
