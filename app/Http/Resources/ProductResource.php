@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'short' => str($this->description)->words(20, '...'),
             'link' => '/products/'.$this->id,
             'configuration' => $this->configuration,
-            'quantity' => $this->availableQuantity(),
+            'quantity' => $this->available_quantity,
             'base_quantity' => $this->quantity,
             'images' => ProductGalleryResource::collection($this->productGallery),
             'default_images' => new ProductGalleryResource($this->defaultImage()),

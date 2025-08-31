@@ -35,7 +35,7 @@ class CartController extends Controller
         $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
 
         if (
-            $validated['quantity'] <= $product->availableQuantity() + $item->quantity &&
+            $validated['quantity'] <= $product->available_quantity + $item->quantity &&
             $validated['quantity'] >= 0
         ) {
             if ($item == null) {
@@ -46,6 +46,7 @@ class CartController extends Controller
             $item->save();
         }
 
+        $product->updateAvailableQuantity();
         $cart->refresh();
 
         return redirect()->back();
@@ -65,7 +66,7 @@ class CartController extends Controller
         $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
         $product = Product::find($validated['product']);
 
-        if ($validated['quantity'] <= $product->availableQuantity()) {
+        if ($validated['quantity'] <= $product->available_quantity) {
             $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
             if ($item == null) {
                 CartItem::create([
@@ -79,18 +80,18 @@ class CartController extends Controller
             }
         }
 
+        $product->updateAvailableQuantity();
+
         return redirect()->back();
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'product' => 'required|exists:products,id',
-        ]);
-
         $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
-        $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $validated['product']);
+        $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
         $item->delete();
+
+        $product->updateAvailableQuantity();
 
         return Inertia::render('Cart', [
             'cart' => new CartResource($cart),

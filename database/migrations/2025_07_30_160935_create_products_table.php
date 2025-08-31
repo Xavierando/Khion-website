@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->integer('base_price');
             $table->integer('quantity');
+            $table->integer('available_quantity');
             $table->json('configuration');
             $table->string('stripe_id');
             $table->string('stripe_price_id');

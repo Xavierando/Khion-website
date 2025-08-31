@@ -41,9 +41,11 @@ class Product extends Model
         return $this->hasMany(ProductGallery::class);
     }
 
-    public function availableQuantity()
+    public function updateAvailableQuantity()
     {
-        return $this->quantity - CartItem::where('product_id', $this->id)->sum('quantity');
+        $this->available_quantity = $this->quantity - CartItem::where('product_id', $this->id)->sum('quantity');
+
+        return $this->save();
     }
 
     public function defaultImage()

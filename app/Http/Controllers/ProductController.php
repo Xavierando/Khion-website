@@ -44,22 +44,23 @@ class ProductController extends Controller
             return redirect()->back();
         }
 
-        $Product = new Product;
-        $Product->code = $request->input('code');
-        $Product->name = $request->input('name');
-        $Product->description = $request->input('description');
-        $Product->base_price = $request->input('base_price');
-        $Product->quantity = $request->input('quantity');
-        $Product->configuration = '{"options":[]}';
-        $Product->genereteStripeID();
-        $Product->save();
+        $product = new Product;
+        $product->code = $request->input('code');
+        $product->name = $request->input('name');
+        $product->description = $request->input('description');
+        $product->base_price = $request->input('base_price');
+        $product->quantity = $request->input('quantity');
+        $product->configuration = '{"options":[]}';
+        $product->genereteStripeID();
+        $product->save();
+        $product->updateAvailableQuantity();
 
         $i = 0;
         while ($request->hasFile('images.'.$i) && $i < 10) {
             $path = Storage::disk('images')->put('/product', $request->file('images.'.$i));
 
             ProductGallery::create([
-                'product_id' => $Product->id,
+                'product_id' => $product->id,
                 'fsname' => $path,
             ]);
 
@@ -112,7 +113,7 @@ class ProductController extends Controller
 
         if ($request->input('update') == 'description' && $request->has('description')) {
             $product->description = $request->input('description');
-            // $product->updateStripePrice();
+            $product->updateStripePrice();
         }
 
         if ($request->input('update') == 'base_price' && $request->has('base_price')) {
@@ -122,6 +123,7 @@ class ProductController extends Controller
 
         if ($request->input('update') == 'quantity' && $request->has('quantity')) {
             $product->quantity = $request->input('quantity');
+            $product->updateAvailableQuantity();
         }
 
         $tag = ['tag' => ''];
