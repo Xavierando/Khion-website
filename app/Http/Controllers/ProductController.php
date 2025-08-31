@@ -9,6 +9,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Models\Tag;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -57,11 +58,19 @@ class ProductController extends Controller
 
         $i = 0;
         while ($request->hasFile('images.'.$i) && $i < 10) {
-            $path = Storage::disk('images')->put('/product', $request->file('images.'.$i));
+            $manager = new ImageManager(new Driver);
+            $image = $manager->read($request->file('images.'.$i));
+            $temp_file = sys_get_temp_dir().'/thumbnail';
+            $image->scaleDown(1200, 1200)->toJpeg(90)->save($request->file('images.'.$i));
+            $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file);
+
+            $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file));
+            $pathfull = Storage::disk('images')->put('product/', $request->file('images.'.$i));
 
             ProductGallery::create([
                 'product_id' => $product->id,
-                'fsname' => $path,
+                'src' => $pathfull,
+                'thumbnail' => $paththumb,
             ]);
 
             $i++;
@@ -146,12 +155,17 @@ class ProductController extends Controller
         while ($request->hasFile('images.'.$i) && $i < 10) {
             $manager = new ImageManager(new Driver);
             $image = $manager->read($request->file('images.'.$i));
-            $image = $image->scaleDown(600, 600)->toJpeg(90)->save($request->file('images.'.$i));
-            $path = Storage::disk('images')->put('product/', $request->file('images.'.$i));
+            $temp_file = sys_get_temp_dir().'/thumbnail';
+            $image->scaleDown(1200, 1200)->toJpeg(90)->save($request->file('images.'.$i));
+            $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file);
+
+            $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file));
+            $pathfull = Storage::disk('images')->put('product/', $request->file('images.'.$i));
 
             ProductGallery::create([
                 'product_id' => $product->id,
-                'fsname' => $path,
+                'src' => $pathfull,
+                'thumbnail' => $paththumb,
             ]);
 
             $i++;
@@ -159,7 +173,7 @@ class ProductController extends Controller
 
         if ($request->input('update') == 'image' && $request->has('deleteImage')) {
             $fsname = substr($request->input('deleteImage'), strlen('/images/'));
-            $image = ProductGallery::firstWhere('fsname', $fsname);
+            $image = ProductGallery::firstWhere('src', $fsname);
             if ($image) {
                 $image->delete();
                 // Storage::disk('images')->delete($request->input('deleteImage'));

@@ -83,7 +83,7 @@ export interface Product {
     tags: Tag[];
 }
 export interface Image {
-    thumb: string;
+    thumbnail: string;
     src: string;
     caption: string;
 }

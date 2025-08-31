@@ -19,7 +19,8 @@ class ProductGallery extends Model
         parent::boot();
 
         static::deleted(function ($image) {
-            Storage::disk('images')->delete($image->fsname);
+            Storage::disk('images')->delete($image->src);
+            Storage::disk('images')->delete($image->thumbnail);
         });
     }
 

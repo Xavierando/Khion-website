@@ -8,12 +8,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="grid grid-cols-3 items-center">
             <div class="col-start-1 col-end-4">
-              <img @click="onShow(0)" class="w-full" :src="product.default_images?.src" />
+              <img @click="onShow(0)" class="w-full" :src="product.default_images?.thumbnail" />
               <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef"
                 @hide="onHide"></vue-easy-lightbox>
             </div>
             <div v-for="(img, index) in imgGallery" :key="img.id">
-              <img @click="onShow(index + 1)" class="w-full" :src="img.src" />
+              <img @click="onShow(index + 1)" class="w-full" :src="img.thumbnail" />
             </div>
           </div>
           <div>

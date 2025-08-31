@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductGallery>
@@ -16,8 +18,12 @@ class ProductGalleryFactory extends Factory
      */
     public function definition(): array
     {
+        $paththumb = Storage::disk('images')->put('product/thumbnail', new File(public_path('images/snowboard1.png')));
+        $path = Storage::disk('images')->put('product/', new File(public_path('images/snowboard1.png')));
+
         return [
-            'fsname' => 'product/snowboard1.png',
+            'thumbnail' => $paththumb,
+            'src' => $path,
         ];
     }
 }

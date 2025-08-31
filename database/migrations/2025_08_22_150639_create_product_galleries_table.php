@@ -15,7 +15,8 @@ return new class extends Migration
         Schema::create('product_galleries', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Product::class);
-            $table->string('fsname');
+            $table->string('thumbnail');
+            $table->string('src');
             $table->text('description')->nullable();
             $table->timestamps();
         });
