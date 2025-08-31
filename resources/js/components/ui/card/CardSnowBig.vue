@@ -13,7 +13,7 @@
                 @hide="onHide"></vue-easy-lightbox>
             </div>
             <div v-for="(img, index) in imgGallery" :key="img.id">
-              <img @click="onShow(index+1)" class="w-full" :src="img.src" />
+              <img @click="onShow(index + 1)" class="w-full" :src="img.src" />
             </div>
           </div>
           <div>
@@ -160,8 +160,7 @@ function submitUpdate(id: number, quantity: number) {
 }
 
 function DeleteCartItem(id: number) {
-  formUpdate.product = id;
-  formUpdate.delete(route('cart.delete'), {
+  formUpdate.delete(route('cart.delete', { product: id }), {
 
   });
 }

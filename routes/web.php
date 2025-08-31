@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::put('/cart', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart', [CartController::class, 'create'])->name('cart.create');
-    Route::delete('/cart', [CartController::class, 'delete'])->name('cart.delete');
+    Route::delete('/cart/{product}', [CartController::class, 'delete'])->name('cart.delete');
 });
 
 require __DIR__.'/settings.php';
