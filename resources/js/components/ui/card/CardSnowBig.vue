@@ -6,14 +6,16 @@
         <h2 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl text-center pb-10">{{
           product.name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="grid grid-cols-3 items-center">
-            <div class="col-start-1 col-end-4">
-              <img @click="onShow(0)" class="w-full" :src="product.default_images?.thumbnail" />
-              <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef"
-                @hide="onHide"></vue-easy-lightbox>
-            </div>
-            <div v-for="(img, index) in imgGallery" :key="img.id">
-              <img @click="onShow(index + 1)" class="w-full" :src="img.thumbnail" />
+          <div  class="flex flex-col">
+              <div class="pb-2">
+                <img @click="onShow(0)" class="w-fit max-h-[350px] mx-auto hover:p-1 transition-p duration-300 cursor-pointer rounded-md" :src="product.default_images?.thumbnail" />
+                <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef"
+                  @hide="onHide"></vue-easy-lightbox>
+              </div>
+            <div class="grid grid-cols-3 items-center gap-2">
+              <div v-for="(img, index) in imgGallery" :key="img.id">
+                <img @click="onShow(index + 1)" class="w-full hover:p-1 transition-p duration-300 cursor-pointer rounded-md" :src="img.thumbnail" />
+              </div>
             </div>
           </div>
           <div>
@@ -21,7 +23,9 @@
               <button class="text-gray-600 text-sm bg-blue-200 rounded-sm p-1 px-2" v-for="tag in product.tags"
                 :key="tag.id">{{ tag.tag }}</button>
             </div>
-            <div>{{ product.description }}</div>
+            <div>
+              <VMarkdownView :content="product.description"></VMarkdownView>
+            </div>
             <div class="flex flex-row-reverse  items-center justify-between">
               <div class="flex flex-row-reverse  items-center  my-6">
                 <button v-if="!item"
@@ -61,6 +65,8 @@ import { TrashIcon } from '@heroicons/vue/24/outline';
 import VueEasyLightbox from 'vue-easy-lightbox';
 import { useForm } from '@inertiajs/vue3';
 import Dialog from '@/components/Dialog.vue';
+import { VMarkdownView } from 'vue3-markdown'
+import 'vue3-markdown/dist/vue3-markdown.css'
 
 const props = defineProps<{
   class?: HTMLAttributes['class'],
