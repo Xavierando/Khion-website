@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ProductGalleryController extends Controller
 {
@@ -25,7 +24,6 @@ class ProductGalleryController extends Controller
 
         $image = new ProductGallery();
         $image->product_id = $product->id;
-        Log::debug("message");
         $image->generateStoragePathForUpload($request->File('file'));
         $image->save();
 
