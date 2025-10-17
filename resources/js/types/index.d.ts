@@ -40,6 +40,7 @@ export interface User {
     url: string;
     imageUrl: string;
     role: string;
+    emailVerified: boolean;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
@@ -86,11 +87,12 @@ export interface Image {
     thumbnail: string;
     src: string;
     caption: string;
+    blob? : File;
 }
 
 export interface CartItem {
     id: number;
-    product: Product;
+    product: number;
     quantity: number;
 }
 
@@ -98,3 +100,16 @@ export interface Cart {
     items: Array<CartItem>
 }
 
+export interface ConfigurationItem {
+    title: string;
+    isActive: boolean;
+    isVisible: boolean;
+}
+
+export interface Order {
+    id: number;
+    status: string;
+    total: number;
+    items: CartItem[];
+    statusOptions: string;
+}
