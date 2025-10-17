@@ -38,6 +38,7 @@ class ProductGalleryFactory extends Factory
         return [
             'thumbnail' => $paththumb,
             'src' => $path,
+            'default' => false,
         ];
     }
 }

@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Models\Tag;
 use App\Traits\ApiResponses;
-use Illuminate\Http\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager;
 
 class ProductController extends ApiController
 {
@@ -92,38 +86,6 @@ class ProductController extends ApiController
                 }
             }
         }
-
-
-        if ($request->has('images')) {
-            foreach ($request->input('images') as $indexImage => $clientImage) {
-                if (isset($clientImage['blob'])) {
-                    $manager = new ImageManager(new Driver);
-                    $image = $manager->read($clientImage['blob']);
-                    $temp_file = sys_get_temp_dir() . '/thumbnail';
-                    $image->scaleDown(1200, 1200)->toJpeg(90)->save($request->file('images.' . $indexImage . '.blob'));
-                    $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file);
-
-                    $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file));
-                    $pathfull = Storage::disk('images')->put('product/', $request->file('images.' . $indexImage . '.blob'));
-
-                    ProductGallery::create([
-                        'product_id' => $product->id,
-                        'src' => $pathfull,
-                        'thumbnail' => $paththumb,
-                    ]);
-                }
-                if (isset($clientImage['delete'])) {
-                    $fsname = substr($clientImage['src'], strlen('/images/'));
-                    $image = ProductGallery::firstWhere('src', $fsname);
-                    if ($image) {
-                        $image->delete();
-                        // Storage::disk('images')->delete($request->input('deleteImage'));
-                    }
-                }
-            }
-        }
-
-
 
         $product->save();
 

@@ -20,7 +20,6 @@ export const useProductsStore = defineStore('products', {
           if (response.data.message === 'success') {
             this.list = [];
             for (const key in response.data.data.products) {
-              console.log(response.data.data.products[key])
               this.list.push(new Prodotto(response.data.data.products[key] as Product))
             }
           }
@@ -99,7 +98,7 @@ export interface Prodotto {
   base_price: number;
   quantity: number;
   base_quantity: number;
-  images: Image[];
+  images: ImmagineProdotto[];
   default_images: Image;
   tags: Tag[];
   created: string;
@@ -120,11 +119,22 @@ export class Prodotto implements Prodotto {
     this.base_price = data.base_price;
     this.quantity = data.quantity;
     this.base_quantity = data.base_quantity;
-    this.images = data.images;
-    if (data.default_images)
-      this.default_images = data.default_images;
+    this.setImages(data.images);
+    if (data.default_images) {
+      const immagineProdotto = new ImmagineProdotto(data.default_images);
+      immagineProdotto.productId = this.id
+      this.default_images = immagineProdotto;
+    }
     this.tags = data.tags;
     this.created = data.created;
+  }
+  setImages(images: Image[]): void {
+    this.images = [];
+    for (const image in images) {
+      const immagineProdotto = new ImmagineProdotto(images[image]);
+      immagineProdotto.productId = this.id;
+      this.images.push(immagineProdotto)
+    }
   }
   addTag(Tag: Tag): void {
     if (!this.tags.some((tag: Tag) => tag.id === Tag.id)) {
@@ -135,12 +145,14 @@ export class Prodotto implements Prodotto {
     this.tags = this.tags.filter((tag: Tag) => tag.id !== Tag.id)
   };
   addImage(File: File): void {
-    const newImage: Image = {
+    const newImage = new ImmagineProdotto({
+      id: 'new',
       thumbnail: URL.createObjectURL(File),
       src: URL.createObjectURL(File),
-      caption: "",
-      blob: File
-    }
+      caption: ""
+    })
+    newImage.productId = this.id;
+    newImage.blob = File;
     this.images.push(newImage)
   };
   removeImage(src: string): void {
@@ -156,25 +168,92 @@ export class Prodotto implements Prodotto {
   };
   async update(): Promise<boolean> {
 
-    const response = await axios.postForm('/api/products/' + this.id.toString(),
+    const response = await axios.put('/api/products/' + this.id.toString(),
       {
-        '_method': 'put',
         code: this.code,
         name: this.name,
         description: this.description,
         base_price: this.base_price,
         quantity: this.base_quantity,
         tags: this.tags,
-        images: this.images,
-        default_images: this.default_images,
       });
+    if (response.request.status === 200) {
+      if (response.data.message === 'success') {
+        this.images.forEach(async (image) => {
+          await image.sync()
+        })
+        return true
+      }
+    }
+
+    return false
+  };
+}
+
+
+export interface ImmagineProdotto {
+  id: number | string;
+  productId: number;
+  thumbnail: string;
+  src: string;
+  caption: string;
+  blob?: File;
+  deletable?: boolean;
+  sync(): Promise<boolean>;
+  create(): Promise<boolean>;
+  setAsDefault(): Promise<boolean>;
+  delete(): Promise<boolean>;
+}
+
+export class ImmagineProdotto implements ImmagineProdotto {
+  constructor(data: Image) {
+    this.id = data.id;
+    this.thumbnail = data.thumbnail;
+    this.src = data.src;
+    this.caption = data.caption;
+    this.blob = undefined;
+    this.deletable = false;
+  };
+  async sync(): Promise<boolean> {
+    if (this.deletable) {
+      return this.delete();
+    }
+    if (this.id === 'new') {
+      return this.create();
+    }
+    return false;
+  }
+  async setAsDefault(): Promise<boolean> {
+    const response = await axios.put('/api/gallery/' + this.id.toString());
     if (response.request.status === 200) {
       if (response.data.message === 'success') {
         return true
 
       }
     }
+    return true
+  };
+  async delete(): Promise<boolean> {
+    const response = await axios.delete('/api/gallery/' + this.id.toString());
+    if (response.request.status === 200) {
+      if (response.data.message === 'success') {
+        return true
 
+      }
+    }
+    return true
+  };
+  async create(): Promise<boolean> {
+    if (this.blob) {
+      const response = await axios.postForm('/api/products/' + this.productId.toString() + '/gallery', {
+        file: this.blob
+      });
+      if (response.request.status === 200) {
+        if (response.data.message === 'success') {
+          return true
+        }
+      }
+    }
     return false
   };
 }

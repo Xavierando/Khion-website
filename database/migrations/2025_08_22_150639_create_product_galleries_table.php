@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('thumbnail');
             $table->string('src');
             $table->text('description')->nullable();
+            $table->boolean('default');
             $table->timestamps();
         });
     }

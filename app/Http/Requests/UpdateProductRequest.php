@@ -28,8 +28,6 @@ class UpdateProductRequest extends FormRequest
             'base_price' => 'required|integer',
             'quantity' => 'required|integer',
             'tags' => 'Array',
-            'images' => 'Array',
-            'images.*' => 'Array',
         ];
     }
 }

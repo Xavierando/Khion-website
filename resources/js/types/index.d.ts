@@ -84,10 +84,10 @@ export interface Product {
     tags: Tag[];
 }
 export interface Image {
+    id : string | number;
     thumbnail: string;
     src: string;
     caption: string;
-    blob? : File;
 }
 
 export interface CartItem {

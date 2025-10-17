@@ -15,6 +15,7 @@ class ProductGalleryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'thumbnail' => '/images/'.$this->thumbnail,
             'src' => '/images/'.$this->src,
             'caption' => '/images/'.$this->description,
