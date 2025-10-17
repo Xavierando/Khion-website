@@ -35,11 +35,7 @@ class ProductGalleryController extends Controller
      */
     public function update(Request $request, ProductGallery $productGallery)
     {
-
-        $productGallery->product->resetDefaultImage;
-        $productGallery->default = true;
-        $productGallery->save();
-
+        $productGallery->setAsDefault();
         return $this->ok("success");
     }
 

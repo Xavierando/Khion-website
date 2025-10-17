@@ -56,4 +56,11 @@ class ProductGallery extends Model
         $image->scaleDown($maxSize, $maxSize)->toJpeg(90)->save($temp_file);
         return Storage::disk('images')->put($path, new File($temp_file));
     }
+
+    public function setAsDefault()
+    {
+        $this->product->resetDefaultImage;
+        $this->default = true;
+        $this->save();
+    }
 }
