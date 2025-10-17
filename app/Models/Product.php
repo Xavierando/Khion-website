@@ -22,7 +22,7 @@ class Product extends Model
         parent::boot();
 
         static::deleted(function ($product) {
-            $product->productGallery->map(fn ($v) => $v->delete());
+            $product->productGallery->map(fn($v) => $v->delete());
         });
     }
 
@@ -91,13 +91,22 @@ class Product extends Model
             'product' => $this->stripe_id,
         ]);
 
-        if ($this->stripe_price_id) {
-            $price = $stripe->prices->update($this->stripe_price_id, [
+        $stripe->products->update(
+            $this->stripe_id,
+            [
+                'default_price' => $price['id'],
+            ]
+        );
+
+        try {
+            $stripe->prices->update($this->stripe_price_id, [
                 'active' => 'false',
             ]);
+        } catch (\Exception $e) {
         }
 
         $this->stripe_price_id = $price['id'];
+
 
         return $price['id'];
     }
