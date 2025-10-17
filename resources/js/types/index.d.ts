@@ -79,7 +79,7 @@ export interface Product {
     link: string;
     configuration: Productconfiguration[];
     images: array<Image>;
-    default_images: Image;
+    default_images: Image | null;
     created: string;
     tags: Tag[];
 }

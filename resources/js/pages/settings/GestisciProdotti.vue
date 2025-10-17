@@ -5,17 +5,21 @@
         <v-list lines="one">
 
             <v-list-subheader inset>Gestisci i tuoi prodotti</v-list-subheader>
-            <v-list-item v-for="product in prodottiStore.list" :key="product.id" :title="product.name"
-                :subtitle="product.code" prepend-avatar="">
+            <v-list-item v-for="prodotto in prodottiStore.all" :key="prodotto.id" :title="prodotto.name"
+                :subtitle="prodotto.code" prepend-avatar="">
                 <template v-slot:prepend>
-                    <v-img color="grey-lighten-1" :src="product.default_images.src" :height="50" :width="50">
+                    <v-img v-if="prodotto.default_images" color="grey-lighten-1" :src="prodotto.default_images.src" :height="50" :width="50">
                     </v-img>
                 </template>
 
                 <template v-slot:append>
-                    <v-btn color="primary" icon="mdi-pencil" variant="text" @click="handleEdit(product.id)"></v-btn>
+                    <v-btn color="primary" icon="mdi-pencil" variant="text" @click="handleEdit(prodotto.id)"></v-btn>
                     <v-btn color="error" icon="mdi-delete" variant="text"></v-btn>
                 </template>
+            </v-list-item>
+            <v-list-item key="new">
+                <v-btn prepend-icon="mdi-plus-circle" color="primary" @click="handleAggiungiNuovoProdotto">Aggiungi
+                    Prodotto</v-btn>
             </v-list-item>
         </v-list>
     </PageSection>
@@ -32,5 +36,12 @@ const router = useRouter()
 
 const handleEdit = (id: number) => {
     router.push({ name: 'editProdotto', params: { id } })
+}
+
+const handleAggiungiNuovoProdotto = async () => {
+    const id = await prodottiStore.createProduct();
+    if (id) {
+        handleEdit(id);
+    }
 }
 </script>

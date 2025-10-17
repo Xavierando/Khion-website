@@ -44,6 +44,21 @@ export const useProductsStore = defineStore('products', {
         // let the form component display the error
         return error
       }
+    },
+    async createProduct() {
+      try {
+        const response = await axios.post('/api/products/', {})
+        if (response.request.status === 200) {
+          if (response.data.message === 'success') {
+            this.list.push(new Prodotto(response.data.data.product as unknown as Product))
+            return Number(response.data.data.product.id);
+          }
+        }
+        return false
+      } catch (error) {
+        // let the form component display the error
+        return false
+      }
     }
   },
   getters: {
@@ -54,7 +69,7 @@ export const useProductsStore = defineStore('products', {
         .slice(0, 4),
     all: (state) =>
       state.list
-        .sort((productA, productB) => dayjs(productA.created).unix() - dayjs(productB.created).unix()),
+        .sort((productA, productB) => productA.id - productB.id),
     filtered: (state) => {
       const search = useSearchStore();
 
@@ -106,7 +121,8 @@ export class Prodotto implements Prodotto {
     this.quantity = data.quantity;
     this.base_quantity = data.base_quantity;
     this.images = data.images;
-    this.default_images = data.default_images;
+    if (data.default_images)
+      this.default_images = data.default_images;
     this.tags = data.tags;
     this.created = data.created;
   }
@@ -148,7 +164,7 @@ export class Prodotto implements Prodotto {
         description: this.description,
         base_price: this.base_price,
         quantity: this.base_quantity,
-        tags:this.tags,
+        tags: this.tags,
         images: this.images,
         default_images: this.default_images,
       });

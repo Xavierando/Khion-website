@@ -32,43 +32,22 @@ class ProductController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
         if (! $request->user()->isAdmin) {
             return redirect()->back();
         }
 
         $product = new Product;
-        $product->code = $request->input('code');
-        $product->name = $request->input('name');
-        $product->description = $request->input('description');
-        $product->base_price = $request->input('base_price');
-        $product->quantity = $request->input('quantity');
-        $product->available_quantity = $request->input('quantity');
+        $product->code = uniqid();
+        $product->name = uniqid();
+        $product->description = 'awesom description';
+        $product->base_price = 0;
+        $product->quantity = 0;
+        $product->available_quantity = 0;
         $product->configuration = '{"options":[]}';
         $product->genereteStripeID();
         $product->save();
-        $product->updateAvailableQuantity();
-
-        $i = 0;
-        while ($request->hasFile('images.' . $i) && $i < 10) {
-            $manager = new ImageManager(new Driver);
-            $image = $manager->read($request->file('images.' . $i));
-            $temp_file = sys_get_temp_dir() . '/thumbnail';
-            $image->scaleDown(1200, 1200)->toJpeg(90)->save($request->file('images.' . $i));
-            $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file);
-
-            $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file));
-            $pathfull = Storage::disk('images')->put('product/', $request->file('images.' . $i));
-
-            ProductGallery::create([
-                'product_id' => $product->id,
-                'src' => $pathfull,
-                'thumbnail' => $paththumb,
-            ]);
-
-            $i++;
-        }
 
         return $this->ok('success', ['product' => new ProductResource($product)]);
     }

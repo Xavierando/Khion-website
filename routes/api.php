@@ -17,6 +17,7 @@ Route::get('/user', function (Request $request) {
 Route::put('/user', [UserController::class,'update'])->middleware('auth:sanctum');;
 Route::get('/teams', [TeamsController::class,'index']);
 Route::get('/products', [ProductController::class,'index']);
+Route::post('/products', [ProductController::class,'store']);
 Route::get('/products/{product}', [ProductController::class,'show']);
 Route::put('/products/{product}', [ProductController::class,'update']);
 Route::get('/cart', [CartController::class,'index'])->middleware('auth:sanctum');
