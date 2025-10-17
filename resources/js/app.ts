@@ -1,30 +1,59 @@
 import '../css/app.css';
+import { createApp } from 'vue';
+import { initializeTheme } from '@/composables/useAppearance';
+import router from '@/router'
+import App from '@/App.vue'
+import { createPinia } from 'pinia'
+// Vuetify
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import { useAuthStore } from '@/stores/auth';
+import colors from 'vuetify/util/colors'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
-import { createInertiaApp } from '@inertiajs/vue3';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import type { DefineComponent } from 'vue';
-import { createApp, h, ref } from 'vue';
-import { ZiggyVue } from 'ziggy-js';
-import { initializeTheme } from './composables/useAppearance';
+const pinia = createPinia();
 
-
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-
-
-createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
-    setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue)
-            .mount(el);
+// Register Vuetify as plugin
+const vuetify = createVuetify({
+  components: {
+    VFileUpload,
+  },
+  theme: {
+    defaultTheme: 'light',
+    variations: {
+      colors: ['primary', 'secondary'],
+      lighten: 2,
+      darken: 2,
+    }, themes: {
+      light: {
+        dark: false,
+        colors: {
+          primary: colors.teal.lighten3, // #E53935
+          secondary: colors.teal.darken1, // #FFCDD2
+        }
+      },
+      dark: {
+        dark: true,
+        colors: {
+          primary: colors.grey.darken4, // #E53935
+          secondary: colors.grey.darken2, // #FFCDD2
+        }
+      },
     },
+  },
+})
 
-    progress: {
-        color: '#4B5563',
-    },
-});
+createApp(App)
+  .use(pinia)
+  .use(router)
+  .use(vuetify)
+  .mount('#app');
+
 
 // This will set light / dark mode on page load...
 initializeTheme();
+
+
+const auth = useAuthStore();
+auth.refresh();
