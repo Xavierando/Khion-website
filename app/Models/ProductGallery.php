@@ -32,15 +32,28 @@ class ProductGallery extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function generateStoragePathFromFile($sourceImage)
+    public function generateStoragePathForUpload($sourceImage)
+    {
+        $this->thumbnail = $this->generateStoragePathForThumbnail($sourceImage);
+        $this->src = $this->generateStoragePathForBigImage($sourceImage);
+    }
+
+    public function generateStoragePathForBigImage($sourceImage)
+    {
+        return $this->generateStoragePath($sourceImage, 1200, 'product/');
+    }
+
+    public function generateStoragePathForThumbnail($sourceImage)
+    {
+        return $this->generateStoragePath($sourceImage, 350, 'product/thumbnail/');
+    }
+
+    public function generateStoragePath($sourceImage, $maxSize, $path)
     {
         $manager = new ImageManager(new Driver);
         $image = $manager->read($sourceImage);
-        $temp_file = sys_get_temp_dir() . '/thumbnail';
-        $image->scaleDown(1200, 1200)->toJpeg(90)->save($sourceImage);
-        $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file);
-
-        $this->thumbnail = Storage::disk('images')->put('product/thumbnail/', new File($temp_file));
-        $this->src = Storage::disk('images')->put('product/', $sourceImage);
+        $temp_file = sys_get_temp_dir() . '/tmpImage';
+        $image->scaleDown($maxSize, $maxSize)->toJpeg(90)->save($temp_file);
+        return Storage::disk('images')->put($path, new File($temp_file));
     }
 }

@@ -26,7 +26,7 @@ class ProductGalleryController extends Controller
         $image = new ProductGallery();
         $image->product_id = $product->id;
         Log::debug("message");
-        $image->generateStoragePathFromFile($request->File('file'));
+        $image->generateStoragePathForUpload($request->File('file'));
         $image->save();
 
         return $this->ok("success");
