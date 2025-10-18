@@ -1,8 +1,7 @@
 <template>
     <PageSection class="mt-16">
     </PageSection>
-    <PageSection v-if="prodotto" :navigation-back="() => router.push({ name: 'gestisciProdotti' })">
-        <v-btn @click="prodotto.update()">Salva</v-btn>
+    <PageSection v-if="prodotto" :navigation-back="() => router.push({ name: 'gestisciProdotti' })" :left-btn="{label:'Salva',click:() => !prodotto || prodotto.update()}">
         <v-row align="start" justify="space-between" class=" fill-width" no-gutters>
             <v-col cols="12" sm="4" :md="3" class="pa-1">
                 <v-text-field label="Nome" v-model="prodotto.name" />
