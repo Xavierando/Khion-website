@@ -14,7 +14,7 @@ const props = defineProps<{
 
 <template>
   <v-card @mouseover="expand = false" @mouseleave="expand = true">
-    <v-img class="tw:w-full" :src="product.default_images?.thumbnail" />
+    <v-img class="fill-height fill-width" :src="product.default_images?.thumbnail" cover aspect-ratio="0.75"/>
     <v-expand-transition>
       <v-card v-show="expand" class="mx-auto bg-primary position-absolute bottom-0 right-0 w-100">
         <v-card-title>
