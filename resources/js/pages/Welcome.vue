@@ -21,7 +21,7 @@ const router = useRouter();
 <template>
 
     <v-theme-provider>
-        <v-parallax src="https://cdn.vuetifyjs.com/images/parallax/material.jpg">
+        <v-parallax src="/images/homepage.jpg">
 
             <Transition appear>
                 <PageSection class="h-screen bg-transparent">
@@ -97,12 +97,12 @@ const router = useRouter();
             </Transition>
 
 
-            <PageSection class="bg-secondary-lighten-2 pt-5 pb-5">
+            <PageSection class="bg-secondary-lighten-2 pt-5 pb-5 mt-10">
                 <h1 class="text-h3 font-weight-bold mb-4 tw:text-center tw:pb-10">
                     I nostri prodotti
                 </h1>
                 <v-row>
-                    <v-col v-for="product in products.hightlight" cols="6" md="3" >
+                    <v-col v-for="product in products.hightlight" cols="12" sm="6" md="3" >
                         <Card  :product="product" :key="product.id"
                             @click="router.push({ path: '/prodotti/' + product.id })">
                         </Card>
