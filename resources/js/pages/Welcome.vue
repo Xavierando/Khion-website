@@ -101,12 +101,14 @@ const router = useRouter();
                 <h1 class="text-h3 font-weight-bold mb-4 tw:text-center tw:pb-10">
                     I nostri prodotti
                 </h1>
-                <div class=" mr-auto ml-auto">
-                    <div class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:gap-4 tw:place-self-center">
-                        <Card v-for="product in products.hightlight" :product="product" :key="product.id" @click="router.push({path:'/prodotti/'+product.id})">
+                <v-row>
+                    <v-col v-for="product in products.hightlight" cols="6" md="3" >
+                        <Card  :product="product" :key="product.id"
+                            @click="router.push({ path: '/prodotti/' + product.id })">
                         </Card>
-                    </div>
-                </div>
+                    </v-col>
+                </v-row>
+
             </PageSection>
 
 
