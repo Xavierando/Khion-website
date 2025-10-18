@@ -103,7 +103,7 @@ const router = useRouter();
                 </h1>
                 <div class=" mr-auto ml-auto">
                     <div class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:gap-4 tw:place-self-center">
-                        <Card v-for="product in products.hightlight" :product="product" :key="product.id">
+                        <Card v-for="product in products.hightlight" :product="product" :key="product.id" @click="router.push({path:'/prodotti/'+product.id})">
                         </Card>
                     </div>
                 </div>
