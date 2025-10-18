@@ -2,7 +2,7 @@
     <v-layout>
         <v-navigation-drawer v-model="drawer" color="primary" disable-resize-watcher>
             <v-list nav>
-                <v-list-item v-for="(item, i) in items" :key="i" :active="i === 0" link :title="item.text"
+                <v-list-item v-for="(item, i) in items" :key="i" :active="($route.path === item.path)" link :title="item.text"
                     @click="router.push({ path: item.path })" />
             </v-list>
         </v-navigation-drawer>
@@ -15,7 +15,7 @@
             <v-img class="me-sm-8" max-width="40" src="/images/logo.png" />
 
             <template v-if="$vuetify.display.mdAndUp">
-                <v-btn v-for="(item, i) in items" :key="i" :active="i === 0" class="me-2 text-none" slim v-bind="item"
+                <v-btn v-for="(item, i) in items" :key="i" :active="($route.path === item.path)" class="me-2 text-none" slim v-bind="item"
                     @click="router.push({ path: item.path })" />
             </template>
 
@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
 import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
+import { useRouter} from 'vue-router';
 import CartNav from '../button/CartNav.vue';
 
 const router = useRouter();
