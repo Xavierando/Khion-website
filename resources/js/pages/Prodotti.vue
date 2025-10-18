@@ -20,17 +20,27 @@ const router = useRouter();
     <v-theme-provider with-background>
 
         <PageSection class="mt-16">
-            <v-text-field 
-            variant="solo"
-            prepend-icon="mdi-magnify"
-            v-model="search.tearm"></v-text-field>
+            <v-row>
+                <v-col>
+                    <v-text-field variant="solo" prepend-icon="mdi-magnify" v-model="search.tearm"></v-text-field>
+                </v-col>
+                <v-col cols="1">
+                    <v-tooltip text="Includi Prodotti Soldout">
+                        <template v-slot:activator="{ props }">
+                            <v-switch v-bind="props" color="primary" v-model="search.includeSoldOut"></v-switch>
+                        </template>
+                    </v-tooltip>
+                </v-col>
+            </v-row>
         </PageSection>
 
-        <PageSection >
+        <PageSection>
 
             <div class=" mr-auto ml-auto">
-                <div class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:lg:grid-cols-3 tw:xl:grid-cols-4 tw:gap-4 tw:place-self-center">
-                    <Card v-for="product in products.filtered" :product="product" :key="product.id" @click="router.push({path:'/prodotti/'+product.id})">
+                <div
+                    class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:lg:grid-cols-3 tw:xl:grid-cols-4 tw:gap-4 tw:place-self-center">
+                    <Card v-for="product in products.filtered" :prodotto="product" :key="product.id"
+                        @click="router.push({ path: '/prodotti/' + product.id })">
                     </Card>
                 </div>
             </div>

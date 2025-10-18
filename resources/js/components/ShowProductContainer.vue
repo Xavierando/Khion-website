@@ -5,13 +5,13 @@
                     <v-row dense>
                         <v-col v-for="img in prodotto.images" lg="6" sm="12" cols="6"
                             class="tw:transition-all tw:duration-500">
-                            <v-dialog>
+                            <v-dialog fullscreen>
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-img v-bind="activatorProps" :src="img.src" class="cursor-pointer"></v-img>
                                 </template>
 
                                 <template v-slot:default="{ isActive }">
-                                    <v-card @click="isActive.value = false">
+                                    <v-card @click="isActive.value = false"  max-height="h-100">
                                         <v-img :src="img.src"></v-img>
                                     </v-card>
                                 </template>

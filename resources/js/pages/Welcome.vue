@@ -103,7 +103,7 @@ const router = useRouter();
                 </h1>
                 <v-row>
                     <v-col v-for="product in products.hightlight" cols="12" sm="6" md="3" >
-                        <Card  :product="product" :key="product.id"
+                        <Card  :prodotto="product" :key="product.id"
                             @click="router.push({ path: '/prodotti/' + product.id })">
                         </Card>
                     </v-col>

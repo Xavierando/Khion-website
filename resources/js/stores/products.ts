@@ -64,22 +64,24 @@ export const useProductsStore = defineStore('products', {
     hightlight: (state) =>
       state.list
         .filter((product) => product.quantity > 0)
-        .sort((productA, productB) => dayjs(productA.created).unix() - dayjs(productB.created).unix())
+        .sort(Prodotto.sortByAvailabilityAndDate)
         .slice(0, 4),
     all: (state) =>
       state.list
-        .sort((productA, productB) => productA.id - productB.id),
+        .sort(Prodotto.sortByAvailabilityAndDate),
     filtered: (state) => {
       const search = useSearchStore();
 
-      if (search.tearm.length === 0) {
-        return state.list
-          .sort((productA, productB) => dayjs(productA.created).unix() - dayjs(productB.created).unix())
-
-      }
       return state.list
-        .filter((product) => product.name.includes(search.tearm))
-        .sort((productA, productB) => dayjs(productA.created).unix() - dayjs(productB.created).unix())
+        .filter((prodotto) =>
+          (search.includeSoldOut || prodotto.quantity > 0) &&
+          (
+            search.tearm.length === 0 ||
+            prodotto.name.includes(search.tearm) ||
+            prodotto.code.includes(search.tearm) ||
+            prodotto.description.includes(search.tearm))
+        )
+        .sort(Prodotto.sortByAvailabilityAndDate)
     },
     findProduct: (state) => (productId: number) => state.list.find((product) => product.id === productId) ?? false
     ,
@@ -108,6 +110,7 @@ export interface Prodotto {
   removeImage(src: string): void;
   setImageAsDefault(src: string): void;
   update(): Promise<boolean>;
+  sortByAvailabilityAndDate(ProdottoA: Prodotto, ProdottoB: Prodotto): number;
 }
 
 export class Prodotto implements Prodotto {
@@ -189,6 +192,16 @@ export class Prodotto implements Prodotto {
     }
 
     return false
+  };
+  static sortByAvailabilityAndDate(ProdottoA: Prodotto, ProdottoB: Prodotto): number {
+    if (ProdottoA.quantity > 0 === ProdottoB.quantity > 0) {
+      return dayjs(ProdottoB.created).unix() - dayjs(ProdottoA.created).unix()
+    }
+    if (ProdottoA.quantity > 0) {
+      return -1
+    } else {
+      return 1
+    }
   };
 }
 

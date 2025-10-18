@@ -33,7 +33,7 @@
                 <v-tabs-window v-model="tab">
                     <v-tabs-window-item value="one">
                         <v-sheet class="mx-auto" :max-width="450">
-                            <CardSnow :product="prodotto"></CardSnow>
+                            <CardSnow :prodotto="prodotto"></CardSnow>
                         </v-sheet>
                     </v-tabs-window-item>
 
