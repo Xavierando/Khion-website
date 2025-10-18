@@ -50,7 +50,10 @@ class Product extends Model
 
     public function defaultImage()
     {
-        return $this->hasMany(ProductGallery::class)->first();
+        if($this->productGallery()->where('default',true)->count() > 0){
+            return $this->productGallery()->where('default',true)->first();
+        }
+        return $this->productGallery()->first();
     }
 
     public function genereteStripeID()
@@ -109,5 +112,9 @@ class Product extends Model
 
 
         return $price['id'];
+    }
+
+    public function resetDefaultImage(){
+        $this->productGallery()->update(['default' => false]);
     }
 }

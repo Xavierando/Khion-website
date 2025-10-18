@@ -27,7 +27,7 @@ class ProductGallery extends Model
         });
     }
 
-    public function tags(): BelongsTo
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
@@ -59,7 +59,7 @@ class ProductGallery extends Model
 
     public function setAsDefault()
     {
-        $this->product->resetDefaultImage;
+        $this->product->resetDefaultImage();
         $this->default = true;
         $this->save();
     }

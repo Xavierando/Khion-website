@@ -27,7 +27,7 @@ class ProductGalleryController extends Controller
         $image->generateStoragePathForUpload($request->File('file'));
         $image->save();
 
-        return $this->ok("success");
+        return $this->ok("success",['id' => $image->id]);
     }
 
     /**

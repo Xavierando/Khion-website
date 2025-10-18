@@ -162,7 +162,6 @@ export class Prodotto implements Prodotto {
     for (const imageIndex in this.images) {
       if (this.images[imageIndex].src === src) {
         this.default_images = this.images[Number(imageIndex)]
-        console.log('ciao')
       }
     }
   };
@@ -180,7 +179,10 @@ export class Prodotto implements Prodotto {
     if (response.request.status === 200) {
       if (response.data.message === 'success') {
         this.images.forEach(async (image) => {
-          await image.sync()
+          await image.sync();
+          if (image.src === this.default_images.src) {
+            await image.setAsDefault();
+          }
         })
         return true
       }
@@ -238,7 +240,6 @@ export class ImmagineProdotto implements ImmagineProdotto {
     if (response.request.status === 200) {
       if (response.data.message === 'success') {
         return true
-
       }
     }
     return true
@@ -250,6 +251,8 @@ export class ImmagineProdotto implements ImmagineProdotto {
       });
       if (response.request.status === 200) {
         if (response.data.message === 'success') {
+          this.id = Number(response.data.data.id);
+          this.blob = undefined;
           return true
         }
       }
