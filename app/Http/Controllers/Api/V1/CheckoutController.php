@@ -16,14 +16,14 @@ class CheckoutController extends ApiController
         $cart = $request->user()->pendingCart()->first();
 
         $itemsToDelete = $cart->CartItems()->where('quantity', 0)->get();
-        $itemsToDelete->each(fn ($i) => $i->delete());
+        $itemsToDelete->each(fn($i) => $i->delete());
 
         $items = $cart->CartItems()->with('product')->get();
 
         $order = Order::create([
             'status' => OrderStatus::pending,
             'total' => $items
-                ->reduce(fn ($carry, $item) => $carry + $item['quantity'] * $item['product']['base_price']),
+                ->reduce(fn($carry, $item) => $carry + $item['quantity'] * $item['product']['base_price']),
             'user_id' => $request->user()->id,
             'cart_id' => $cart->id,
         ]);
@@ -38,16 +38,15 @@ class CheckoutController extends ApiController
         })->toArray();
 
         $checkoutSession = $request->user()->checkout($checkout, [
-            'success_url' => 'http://127.0.0.1//checkout/success',
-            'cancel_url' => 'http://127.0.0.1//checkout/success',
+            'success_url' => env('APP_URL') . '/checkout?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' =>  env('APP_URL') . '/checkout?session_id={CHECKOUT_SESSION_ID}',
             'metadata' => ['order_id' => $order->id],
         ]);
 
         $order->stripe_checkout_id = $checkoutSession->id;
         $order->save();
 
-        return $this->ok('success',['url' => $checkoutSession->url]);
-
+        return $this->ok('success', ['url' => $checkoutSession->url]);
     }
 
     public function retry(Request $request, Order $order)
@@ -60,7 +59,7 @@ class CheckoutController extends ApiController
             $order->status = OrderStatus::pending;
             $order->save();
         } else {
-            return $this->ok('success',['url' => $checkoutSession->url]);
+            return $this->ok('success', ['url' => $checkoutSession->url]);
         }
 
         return $this->notAuthorized('');
@@ -68,22 +67,27 @@ class CheckoutController extends ApiController
 
     public function check(Request $request)
     {
-        $request->input('session_id');
+        $request->validate([
+            'session_id' => 'required|string',
+        ]);
 
         $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
         $order_id = $checkoutSession['metadata']['order_id'] ?? null;
         if ($order_id === null) {
-            /**
-             * if i cant retrive the order id....
-             */
+            return $this->notAuthorized('');
         }
 
         $order = Order::find($order_id);
-        $order->status = $checkoutSession['payment_status'];
+        $order->statusUpdate($checkoutSession['payment_status']);
         $order->save();
 
-        return $this->ok('success',['order' => new OrderResource($order)]);
-
+        return $this->ok(
+            'success',
+            [
+                'order' => new OrderResource($order),
+                'url' => $checkoutSession->url
+            ]
+        );
     }
 
     public function cancel()
