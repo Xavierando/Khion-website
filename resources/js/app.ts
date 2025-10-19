@@ -25,24 +25,7 @@ const vuetify = createVuetify({
       colors: ['primary', 'secondary'],
       lighten: 2,
       darken: 2,
-    }, themes: {
-      light: {
-        dark: false,
-        colors: {
-          primary: colors.blue.darken3, // #E53935
-          secondary: colors.lightBlue.lighten2, // #FFCDD2
-          accent: colors.lime.darken1,
-          warning: colors.red.darken1,
-        }
-      },
-      dark: {
-        dark: true,
-        colors: {
-          primary: colors.grey.darken4, // #E53935
-          secondary: colors.grey.darken2, // #FFCDD2
-        }
-      },
-    },
+    }
   },
 })
 
