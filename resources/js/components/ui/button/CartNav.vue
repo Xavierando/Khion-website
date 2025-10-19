@@ -1,19 +1,13 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cart';
 import { useProductsStore } from '@/stores/products';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const cart = useCartStore();
 const products = useProductsStore();
 const router = useRouter();
 
-const cartItems = computed(() => cart.items.map((item) => {
-    return {
-        id: item.id,
-        quantity: item.quantity,
-        product: products.findProduct(item.product)
-    }
-}))
+const cartItems = computed(() => cart.dialogList)
 
 const navigateToProduct = (productId: number) => {
     console.log(productId);
@@ -22,8 +16,9 @@ const navigateToProduct = (productId: number) => {
 
 const handleCheckout = async () => {
     const url = await cart.transformToOrder();
-
+    window.location.href = url;
 }
+
 </script>
 
 <template>
