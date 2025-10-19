@@ -18,7 +18,7 @@ prodotti.fetchProduct(props.id);
 </script>
 
 <template>
-    <v-theme-provider with-background>
+    <v-theme-provider>
         <div class="mt-16" />
         <PageSection v-if="prodotto" :navigation-back="() => router.push({ path: '/prodotti' })">
             <ShowProductContainer :prodotto="prodotto" />
