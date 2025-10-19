@@ -7,6 +7,7 @@ import { useProductsStore } from '@/stores/products';
 import { useRouter } from 'vue-router';
 import NavBar from '@/components/ui/nav/NavBar.vue';
 import CardTeam from '@/components/ui/card/CardTeam.vue';
+import { useDisplay } from 'vuetify';
 
 const teams = useTeamsStore();
 const products = useProductsStore();
@@ -25,12 +26,14 @@ const router = useRouter();
 
             <Transition appear>
                 <PageSection class="h-screen bg-transparent">
-                    <div class="tw:mx-auto tw:h-full tw:grid tw:place-items-center">
-                        <div class="tw:lg:min-w-md pa-6 tw:bg-white/20 tw:rounded-lg tw:h-fit">
-                            <h1 class="tw:text-7xl tw:text-black tw:font-bold">KHION</h1>
-                            <p class="tw:text-black tw:ml-5 tw:font-bold">ALPINE SNOWBOARD</p>
-                        </div>
-                    </div>
+                    <v-row class="fill-height align-center">
+                        <v-col>
+                            <v-img class="mx-auto pa-2 bg-black" rounded="xl" :max-width="600" src="/images/Logo bianco.png">
+
+                            </v-img>
+                        </v-col>
+                    </v-row>
+
                 </PageSection>
             </Transition>
 
@@ -38,12 +41,9 @@ const router = useRouter();
 
             <Transition appear>
                 <PageSection class="bg-secondary-darken-1  pt-5 pb-5">
-                    <h1 class="text-h3 font-weight-bold mb-4 tw:text-center tw:pb-10">
-                        La nostra
-                        storia</h1>
-                    <div class="tw:flex flex-row tw:item-center tw:justify-center">
-                        <div>
-
+                    <h1 class="text-h3 font-weight-bold mb-4 tw:text-center tw:pb-10"> La nostra storia</h1>
+                    <v-row class="justify-between align-center">
+                        <v-col>
                             <p class="pa-2 text-body-1">Benvenuti in KHION Snowboards, dove la passione incontra la
                                 precisione nel cuore
                                 delle montagne. Fondata nel 2020 da un gruppo di appassionati di snowboard, il nostro
@@ -62,14 +62,16 @@ const router = useRouter();
                                 esce dal nostro laboratorio è una testimonianza del nostro impegno per l'eccellenza e la
                                 sostenibilità. Crediamo che le migliori discese provengano da tavole che non sono solo
                                 performanti, ma anche eco-compatibili.</p>
-                        </div>
-                        <div class="tw:hidden tw:lg:block">
+                        </v-col>
+                        <v-col v-if="$vuetify.display.mdAndUp" md="3" lg="2">
                             <img class="tw:rounded-xl" src="@images/homepage.jpg">
-                        </div>
-                    </div>
-                    <div class="tw:flex tw:flex-row tw:item-center tw:justify-center tw:flex-row-reverse tw:mt-2">
-                        <div>
-
+                        </v-col>
+                    </v-row>
+                    <v-row class="justify-between align-center">
+                        <v-col v-if="$vuetify.display.mdAndUp" md="3" lg="2">
+                            <img class="tw:rounded-xl" src="@images/homepage.jpg">
+                        </v-col>
+                        <v-col>
                             <p class="pa-2 text-body-1">Benvenuti in KHION Snowboards, dove la passione incontra la
                                 precisione nel cuore
                                 delle montagne. Fondata nel 2020 da un gruppo di appassionati di snowboard, il nostro
@@ -88,11 +90,8 @@ const router = useRouter();
                                 esce dal nostro laboratorio è una testimonianza del nostro impegno per l'eccellenza e la
                                 sostenibilità. Crediamo che le migliori discese provengano da tavole che non sono solo
                                 performanti, ma anche eco-compatibili.</p>
-                        </div>
-                        <div class="tw:hidden tw:lg:block">
-                            <img class="tw:rounded-xl" src="@images/homepage.jpg">
-                        </div>
-                    </div>
+                        </v-col>
+                    </v-row>
                 </PageSection>
             </Transition>
 
@@ -102,8 +101,8 @@ const router = useRouter();
                     I nostri prodotti
                 </h1>
                 <v-row>
-                    <v-col v-for="product in products.hightlight" cols="12" sm="6" md="3" >
-                        <Card  :prodotto="product" :key="product.id"
+                    <v-col v-for="product in products.hightlight" cols="12" sm="6" md="3">
+                        <Card :prodotto="product" :key="product.id"
                             @click="router.push({ path: '/prodotti/' + product.id })">
                         </Card>
                     </v-col>
