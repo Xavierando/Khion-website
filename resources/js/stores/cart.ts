@@ -71,6 +71,7 @@ export const useCartStore = defineStore('cart', {
   getters: {
     all: (state) =>
       state.items
+        .filter((item) => item.quantity > 0)
         .sort((itemA, itemB) => itemA.id - itemB.id),
     find: (state) => (productId: number) => state.items.find((item) => item.product === productId),
     countTotalQuantity: (state) => state.items.reduce((sum: number, item) => sum += item.quantity, 0),
@@ -80,11 +81,18 @@ export const useCartStore = defineStore('cart', {
         const product = products.findProduct(item.product);
         return (product) ? sum += item.quantity * product.base_price : sum
       }, 0)
-    }
+    },
+    dialogList: (state) =>
+      state.items
+        .filter((item) => item.quantity > 0)
+        .sort((itemA, itemB) => itemA.id - itemB.id)
+        .map((item) => {
+          const products = useProductsStore();
+          return {
+            id: item.id,
+            quantity: item.quantity,
+            product: products.findProduct(item.product)
+          }
+        })
   },
 })
-
-interface Products {
-  products: Prodotto[],
-  findId: number | null,
-}
