@@ -38,6 +38,12 @@ const routes = [
     component: () => import("@/pages/settings/ModificaProdotto.vue"),
     props: true
   },
+  {
+    path: "/checkout/:session_id",
+    name: "checkout",
+    component: () => import("@/pages/Acquisto.vue"),
+    props: true
+  },
 ];
 
 
