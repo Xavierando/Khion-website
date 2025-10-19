@@ -17,21 +17,21 @@ const router = useRouter();
 
 <template>
 
-    <v-theme-provider with-background>
+    <v-theme-provider>
 
         <PageSection class="mt-16">
-            <v-row>
-                <v-col>
+            <v-sheet class="d-flex justify-center">
+                <div class="flex-grow-1" style="max-width: 600px;">
                     <v-text-field variant="solo" prepend-icon="mdi-magnify" v-model="search.tearm"></v-text-field>
-                </v-col>
-                <v-col cols="1">
+                </div>
+                <div cols="1">
                     <v-tooltip text="Includi Prodotti Soldout">
                         <template v-slot:activator="{ props }">
                             <v-switch v-bind="props" color="primary" v-model="search.includeSoldOut"></v-switch>
                         </template>
                     </v-tooltip>
-                </v-col>
-            </v-row>
+                </div>
+            </v-sheet>
         </PageSection>
 
         <PageSection>
