@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { CartItem, Order } from '@/types'
+import { useProductsStore } from './products'
+import dayjs from 'dayjs'
 
 
 
@@ -67,7 +69,7 @@ export interface Ordine {
   total: number;
   items: CartItem[];
   setStatus(newStatus: string): Promise<boolean>;
-  checkoutUrl(): Promise<string|false> ;
+  checkoutUrl(): Promise<string | false>;
   sortByStatusAndDate(OrdineA: Ordine, OrdineB: Ordine): number;
   delete(): void
   deleteFromServer(): Promise<boolean>
@@ -97,18 +99,30 @@ export class Ordine implements Ordine {
 
     return false
   };
-  async checkoutUrl(): Promise<string|false> {
+  async checkoutUrl(): Promise<string | false> {
     const response = await axios.get('/api/checkout/' + this.id.toString());
     if (response.request.status === 200) {
       if (response.data.message === 'success') {
         return response.data.data.url
       }
-    }  
+    }
     return false
   };
   static sortByStatusAndDate(OrdineA: Ordine, OrdineB: Ordine): number {
-    return 0
+    const statusOrder = [
+      'pending',
+      'paid',
+      'production',
+      'expedited',
+    ]
+
+    if ((statusOrder.indexOf(OrdineA.status) - statusOrder.indexOf(OrdineB.status)) !== 0) {
+      return statusOrder.indexOf(OrdineA.status) - statusOrder.indexOf(OrdineB.status);
+    }
+
+    return OrdineB.id - OrdineA.id
   };
+
   async delete() {
     this.deleteFromServer().then((isSuccess) => isSuccess && this.deleteFromLocalStore())
 
@@ -129,5 +143,15 @@ export class Ordine implements Ordine {
   deleteFromLocalStore() {
     const products = useOrdersStore();
     products.delete(this.id);
+  }
+  getItemsList() {
+    return this.items.map((item) => {
+      const products = useProductsStore();
+      return {
+        id: item.id,
+        quantity: item.quantity,
+        product: products.findProduct(item.product)
+      }
+    })
   }
 }

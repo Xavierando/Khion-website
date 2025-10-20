@@ -79,7 +79,10 @@ export const useProductsStore = defineStore('products', {
             search.tearm.length === 0 ||
             prodotto.name.includes(search.tearm) ||
             prodotto.code.includes(search.tearm) ||
-            prodotto.description.includes(search.tearm))
+            prodotto.description.includes(search.tearm) ||
+            prodotto.base_price.toString().includes(search.tearm) ||
+            prodotto.tags.some((tag) => tag.tag.includes(search.tearm)))
+
         )
         .sort(Prodotto.sortByAvailabilityAndDate)
     },

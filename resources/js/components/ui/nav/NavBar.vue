@@ -32,6 +32,7 @@
                         <v-list>
                             <v-list-item link title="Update profile"  @click="router.push({ path: '/profilo' })" />
                             <v-list-item link title="Gestisci i Prodotti"  @click="router.push({ name: 'gestisciProdotti' })" />
+                            <v-list-item link title="I miei Ordini"  @click="router.push({ name: 'gestisciOrdini' })" />
 
                             <v-list-item link title="Sign out" @click="auth.logout()" />
                         </v-list>

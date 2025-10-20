@@ -44,6 +44,17 @@ const routes = [
     component: () => import("@/pages/Acquisto.vue"),
     props: true
   },
+  {
+    path: "/settings/ordini",
+    name: "gestisciOrdini",
+    component: () => import("@/pages/settings/Ordini.vue"),
+  },
+  {
+    path: "/settings/ordini/:id",
+    name: "editOrdine",
+    component: () => import("@/pages/settings/Ordine.vue"),
+    props: true
+  },
 ];
 
 
