@@ -21,7 +21,6 @@ const router = useRouter();
 
 <template>
 
-    <v-theme-provider>
         <v-parallax src="/images/homepage.jpg">
 
             <Transition appear>
@@ -121,5 +120,4 @@ const router = useRouter();
                 </div>
             </PageSection>
         </v-parallax>
-    </v-theme-provider>
 </template>

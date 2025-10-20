@@ -20,7 +20,7 @@ const vuetify = createVuetify({
     VFileUpload,
   },
   theme: {
-    defaultTheme: 'dark',
+    defaultTheme: 'light',
     variations: {
       colors: ['primary', 'secondary'],
       lighten: 2,
