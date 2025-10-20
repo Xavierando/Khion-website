@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('user', function(Request $request){
         return new UserResource($request->user());
     });
-    Route::apiResource('user', UserController::class)->only(['update']);
+    Route::put('user', [UserController::class,'update']);
 
     Route::apiResource('products', ProductController::class)->only(['store', 'update']);
 
