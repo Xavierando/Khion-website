@@ -6,7 +6,8 @@
 /public/storage
 /storage/*.key
 /storage/*.png
-/public/images/*
+/public/images/pic/*
+/public/images/product/*
 /public/public/*
 /storage/resources/images/pic/*
 /storage/pail
