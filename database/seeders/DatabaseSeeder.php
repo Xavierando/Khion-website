@@ -30,12 +30,20 @@ class DatabaseSeeder extends Seeder
             'role' => 'Mastro Artigiano',
         ]);
         User::factory()->create([
-            'name' => 'Xavier',
-            'email' => 'savio@example.com',
+            'name' => 'Angelo',
+            'email' => 'angelo@example.com',
             'isAdmin' => true,
             'isTeam' => true,
-            'role' => 'Mastro Diversamente Occupato',
+            'role' => 'Mastro Artigiano',
         ]);
+        User::factory()->create([
+            'name' => 'Simone',
+            'email' => 'Simone@example.com',
+            'isAdmin' => true,
+            'isTeam' => true,
+            'role' => 'Mastro Artigiano',
+        ]);
+        /*
         User::factory(5);
 
         Tag::factory()->create(['tag' => '150cm']);
@@ -74,5 +82,6 @@ class DatabaseSeeder extends Seeder
             ->recycle($user)
             ->recycle($carts)
             ->create();
+        */
     }
 }
