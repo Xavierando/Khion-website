@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth';
 import { useCartStore } from '@/stores/cart';
 import { useProductsStore } from '@/stores/products';
-import { computed } from 'vue';
+import { computed,ref } from 'vue';
 
 const props = defineProps<{
     IdProdotto: number;
@@ -11,21 +12,30 @@ const cart = useCartStore();
 const products = useProductsStore();
 const prodotto = computed(() => products.findProduct(props.IdProdotto));
 const cartItem = computed(() => cart.find(props.IdProdotto));
+const loginRequired = ref(false);
+const auth = useAuthStore();
 
 
 
 
 const handleAddQuantity = () => {
-    console.log(prodotto.value)
+    if(!auth.loggedIn){
+        loginRequired.value = true;
+        return 0;
+    }
     if (prodotto.value) {
-        if(prodotto.value.quantity > 0){
+        if (prodotto.value.quantity > 0) {
             cart.increment(prodotto.value);
         }
     }
 }
 const handleSubQuantity = () => {
+    if(!auth.loggedIn){
+        loginRequired.value = true;
+        return 0;
+    }
     if (prodotto.value && cartItem.value) {
-        if(cartItem.value.quantity ?? 0 > 0){
+        if (cartItem.value.quantity ?? 0 > 0) {
             cart.decrement(prodotto.value);
         }
     }
@@ -49,4 +59,13 @@ const handleSubQuantity = () => {
             </v-btn>
         </v-container>
     </v-sheet>
+    <v-dialog max-width="340" v-model="loginRequired">
+            <v-card prepend-icon="mdi-package"
+                text="Il login é richiesto per procedere con gli acquisti"
+                title="Login richiesto">
+                <template v-slot:actions>
+                    <v-btn class="ml-auto" text="Login" @click="$router.push('/login')"></v-btn>
+                </template>
+            </v-card>
+    </v-dialog>
 </template>
