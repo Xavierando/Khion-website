@@ -1,37 +1,47 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\OrderStatus;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Rules\isOrderStatus;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 
-class OrderController extends Controller
+class OrderController extends ApiController
 {
     use ApiResponses;
 
     public function index(Request $request)
     {
-        $orderByField = DB::raw('FIELD(status, ' . substr(array_reduce(OrderStatus::cases(), fn($carry, $item) => $carry .= ",'" . $item->value . "'", ''), 1) . ')');
         if ($request->user()->isAdmin) {
-            $orders = Order::with('order_items')->orderBy($orderByField)->orderBy('created_at')->paginate(15);
+            $orders = Order::with('order_items')->get();
         } else {
-            $orders = $request->user()->orders()->with('order_items')->orderBy($orderByField)->orderBy('created_at')->paginate(15);
+            $orders = $request->user()->orders()->with('order_items')->get();
         }
 
         return $this->ok('success', ['orders' => OrderResource::collection($orders)]);
     }
 
+    public function show(Request $request, Order $order)
+    {
+        $order->checkPayementStatus();
+        if ($request->user()->isAdmin) {
+            return $this->ok('success', ['order' => new OrderResource($order)]);
+        } else if ($order->user->id = $request->user()->id) {
+            return $this->ok('success', ['order' => new OrderResource($order)]);
+        }
+        return $this->notAuthorized('unauthorized');
+    }
+
     public function update(Request $request, Order $order)
     {
+        $request->validate([
+            'status' => [new isOrderStatus]
+        ]);
 
-        $user = $request->user();
-
-        if ($request->has('status') && $user->isAdmin) {
+        if ($request->user->isAdmin) {
             $status = $request->enum('status', OrderStatus::class);
             $order->statusUpdate($status);
             return $this->ok('success', ['order' => new OrderResource($order)]);
@@ -42,9 +52,7 @@ class OrderController extends Controller
 
     public function delete(Request $request, Order $order)
     {
-        $user = $request->user();
-        
-        if ($user->isAdmin && $order->status == OrderStatus::pending) {
+        if ($request->user->isAdmin && $order->status == OrderStatus::pending) {
             $order->delete();
         }
 

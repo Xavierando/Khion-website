@@ -1,12 +1,10 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import { CartItem, Image, Order, Product } from '@/types'
-import { useSearchStore } from './search'
-import { Prodotto } from './products'
+import { CartItem, Order } from '@/types'
 
 
 
-export const useProductsStore = defineStore('products', {
+export const useOrdersStore = defineStore('orders', {
   state: () => {
     return {
       list: [],
@@ -52,7 +50,7 @@ export const useProductsStore = defineStore('products', {
     all: (state) =>
       state.list
         .sort(Ordine.sortByStatusAndDate),
-    findOrder: (state) => (orderId: number) => state.list.find((order) => order.id === orderId) ?? false
+    find: (state) => (orderId: number) => state.list.find((order) => order.id === orderId) ?? false
     ,
   },
 })
@@ -69,6 +67,7 @@ export interface Ordine {
   total: number;
   items: CartItem[];
   setStatus(newStatus: string): Promise<boolean>;
+  checkoutUrl(): Promise<string|false> ;
   sortByStatusAndDate(OrdineA: Ordine, OrdineB: Ordine): number;
   delete(): void
   deleteFromServer(): Promise<boolean>
@@ -98,6 +97,15 @@ export class Ordine implements Ordine {
 
     return false
   };
+  async checkoutUrl(): Promise<string|false> {
+    const response = await axios.get('/api/checkout/' + this.id.toString());
+    if (response.request.status === 200) {
+      if (response.data.message === 'success') {
+        return response.data.data.url
+      }
+    }  
+    return false
+  };
   static sortByStatusAndDate(OrdineA: Ordine, OrdineB: Ordine): number {
     return 0
   };
@@ -119,76 +127,7 @@ export class Ordine implements Ordine {
     }
   }
   deleteFromLocalStore() {
-    const products = useProductsStore();
+    const products = useOrdersStore();
     products.delete(this.id);
   }
-}
-
-
-export interface ImmagineProdotto {
-  id: number | string;
-  productId: number;
-  thumbnail: string;
-  src: string;
-  caption: string;
-  blob?: File;
-  deletable?: boolean;
-  sync(): Promise<boolean>;
-  create(): Promise<boolean>;
-  setAsDefault(): Promise<boolean>;
-  delete(): Promise<boolean>;
-}
-
-export class ImmagineProdotto implements ImmagineProdotto {
-  constructor(data: Image) {
-    this.id = data.id;
-    this.thumbnail = data.thumbnail;
-    this.src = data.src;
-    this.caption = data.caption;
-    this.blob = undefined;
-    this.deletable = false;
-  };
-  async sync(): Promise<boolean> {
-    if (this.deletable) {
-      return this.delete();
-    }
-    if (this.id === 'new') {
-      return this.create();
-    }
-    return false;
-  }
-  async setAsDefault(): Promise<boolean> {
-    const response = await axios.put('/api/gallery/' + this.id.toString());
-    if (response.request.status === 200) {
-      if (response.data.message === 'success') {
-        return true
-
-      }
-    }
-    return true
-  };
-  async delete(): Promise<boolean> {
-    const response = await axios.delete('/api/gallery/' + this.id.toString());
-    if (response.request.status === 200) {
-      if (response.data.message === 'success') {
-        return true
-      }
-    }
-    return true
-  };
-  async create(): Promise<boolean> {
-    if (this.blob) {
-      const response = await axios.postForm('/api/products/' + this.productId.toString() + '/gallery', {
-        file: this.blob
-      });
-      if (response.request.status === 200) {
-        if (response.data.message === 'success') {
-          this.id = Number(response.data.data.id);
-          this.blob = undefined;
-          return true
-        }
-      }
-    }
-    return false
-  };
 }

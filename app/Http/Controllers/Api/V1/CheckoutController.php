@@ -7,7 +7,6 @@ use App\Enums\OrderStatus;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Laravel\Cashier\Cashier;
 
 class CheckoutController extends ApiController
 {
@@ -30,18 +29,8 @@ class CheckoutController extends ApiController
 
         $cart->status = CartStatus::ordered;
         $cart->save();
-
-        $checkout = $items->mapWithKeys(function ($i) {
-            return [
-                $i['product']['stripe_price_id'] => intval($i['quantity']),
-            ];
-        })->toArray();
-
-        $checkoutSession = $request->user()->checkout($checkout, [
-            'success_url' => env('APP_URL') . '/checkout?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' =>  env('APP_URL') . '/checkout?session_id={CHECKOUT_SESSION_ID}',
-            'metadata' => ['order_id' => $order->id],
-        ]);
+        
+        $checkoutSession = $order->createCheckoutSession();
 
         $order->stripe_checkout_id = $checkoutSession->id;
         $order->save();
@@ -49,49 +38,10 @@ class CheckoutController extends ApiController
         return $this->ok('success', ['url' => $checkoutSession->url]);
     }
 
-    public function retry(Request $request, Order $order)
+    public function retry(Order $order)
     {
-        $checkoutSession = Cashier::stripe()->checkout->sessions->retrieve($order->stripe_checkout_id);
-        if (! $checkoutSession) {
-            return redirect()->back();
-        }
-        if ($order->status == OrderStatus::pending && $checkoutSession['payment_status'] == 'paid') {
-            $order->status = OrderStatus::pending;
-            $order->save();
-        } else {
-            return $this->ok('success', ['url' => $checkoutSession->url]);
-        }
+        
+        return $this->ok('success', ['url' => $order->checkoutUrl()]);
 
-        return $this->notAuthorized('');
-    }
-
-    public function check(Request $request)
-    {
-        $request->validate([
-            'session_id' => 'required|string',
-        ]);
-
-        $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
-        $order_id = $checkoutSession['metadata']['order_id'] ?? null;
-        if ($order_id === null) {
-            return $this->notAuthorized('');
-        }
-
-        $order = Order::find($order_id);
-        $order->statusUpdate($checkoutSession['payment_status']);
-        $order->save();
-
-        return $this->ok(
-            'success',
-            [
-                'order' => new OrderResource($order),
-                'url' => $checkoutSession->url
-            ]
-        );
-    }
-
-    public function cancel()
-    {
-        return redirect('/cart');
     }
 }

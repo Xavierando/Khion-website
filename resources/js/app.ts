@@ -20,12 +20,36 @@ const vuetify = createVuetify({
     VFileUpload,
   },
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'dark',
     variations: {
       colors: ['primary', 'secondary'],
       lighten: 2,
       darken: 2,
-    }
+    },
+    themes: {
+      light: {
+        colors: {
+          primary: '#65ccf4',
+          secondary: '#03a9f4',
+          accent: '#82B1FF',
+          error: '#FF5252',
+          info: '#2196F3',
+          success: '#4CAF50',
+          warning: '#FFC107',
+        },
+      },
+      dark: {
+        colors: {
+          primary: '#65ccf4',
+          secondary: '#03a9f4',
+          accent: '#82B1FF',
+          error: '#FF5252',
+          info: '#2196F3',
+          success: '#4CAF50',
+          warning: '#FFC107',
+        },
+      },
+    },
   },
 })
 
