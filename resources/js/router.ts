@@ -10,7 +10,7 @@ const routes = [
   {
     path: "/login",
     component: () => import("@/pages/Login.vue"),
-    meta: { requiresGuest: true }
+    meta: { requiresGuest: true },
   },
   {
     path: "/prodotti",
@@ -26,33 +26,39 @@ const routes = [
     path: "/profilo",
     name: "profilo",
     component: () => import("@/pages/settings/Profilo.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/settings/prodotti",
     name: "gestisciProdotti",
     component: () => import("@/pages/settings/GestisciProdotti.vue"),
+    meta: { requiresAdmin: true },
   },
   {
     path: "/settings/prodotti/:id",
     name: "editProdotto",
     component: () => import("@/pages/settings/ModificaProdotto.vue"),
+    meta: { requiresAdmin: true },
     props: true
   },
   {
     path: "/checkout/:session_id",
     name: "checkout",
     component: () => import("@/pages/Acquisto.vue"),
+    meta: { requiresAuth: true },
     props: true
   },
   {
     path: "/settings/ordini",
     name: "gestisciOrdini",
     component: () => import("@/pages/settings/Ordini.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/settings/ordini/:id",
     name: "editOrdine",
     component: () => import("@/pages/settings/Ordine.vue"),
+    meta: { requiresAuth: true },
     props: true
   },
 ];
@@ -65,10 +71,17 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore();
+  if(to.meta.requiresAuth && !auth.loggedIn){
+    next({path:'/'});
+  }
+
+  if(to.meta.requiresAdmin && !auth.user.isAdmin){
+    next({path:'/'});
+  }
   if (to.meta.requiresGuest && auth.loggedIn) {
-    next(from.path)
+    next(from.path);
   } else {
-    next()
+    next();
   }
 })
 

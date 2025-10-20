@@ -38,6 +38,11 @@ class TagController extends ApiController
      */
     public function store(Request $request)
     {
+
+        if (! $request->user()->isAdmin) {
+            return $this->notAuthorized('unauthorized');
+        }
+        
         $request->validate([
             'tag' => 'required|string|unique:tags,tag',
         ]);

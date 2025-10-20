@@ -18,6 +18,10 @@ class ProductGalleryController extends Controller
      */
     public function store(Request $request, Product $product)
     {
+        if (! $request->user()->isAdmin) {
+            return $this->notAuthorized('unauthorized');
+        }
+
         $request->validate([
             'file' => 'required|file',
         ]);
@@ -35,6 +39,11 @@ class ProductGalleryController extends Controller
      */
     public function update(Request $request, ProductGallery $productGallery)
     {
+
+        if (! $request->user()->isAdmin) {
+            return $this->notAuthorized('unauthorized');
+        }
+
         $productGallery->setAsDefault();
         return $this->ok("success");
     }
@@ -44,6 +53,11 @@ class ProductGalleryController extends Controller
      */
     public function delete(Request $request, ProductGallery $productGallery)
     {
+
+        if (! $request->user()->isAdmin) {
+            return $this->notAuthorized('unauthorized');
+        }
+        
         $productGallery->delete();
         return $this->ok("success");
     }

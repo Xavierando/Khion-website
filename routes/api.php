@@ -21,7 +21,11 @@ Route::get('/tags', [TagController::class, 'index']);
 
 
 Route::middleware('auth')->group(function () {
-    Route::apiResource('user', UserController::class)->only(['index','update']);
+
+    Route::get('user', function(Request $request){
+        return new UserResource($request->user());
+    });
+    Route::apiResource('user', UserController::class)->only(['update']);
 
     Route::apiResource('products', ProductController::class)->only(['store', 'update']);
 

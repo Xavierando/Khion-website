@@ -29,7 +29,7 @@ class CheckoutController extends ApiController
 
         $cart->status = CartStatus::ordered;
         $cart->save();
-        
+
         $checkoutSession = $order->createCheckoutSession();
 
         $order->stripe_checkout_id = $checkoutSession->id;
@@ -38,10 +38,12 @@ class CheckoutController extends ApiController
         return $this->ok('success', ['url' => $checkoutSession->url]);
     }
 
-    public function retry(Order $order)
+    public function retry(Request $request, Order $order)
     {
-        
-        return $this->ok('success', ['url' => $order->checkoutUrl()]);
 
+        if ($request->user()->id !== $order->user->id) {
+            return $this->notAuthorized('unauthorized');
+        }
+        return $this->ok('success', ['url' => $order->checkoutUrl()]);
     }
 }

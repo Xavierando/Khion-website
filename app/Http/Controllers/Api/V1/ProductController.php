@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use App\Models\ProductGallery;
 use App\Models\Tag;
+use App\Policies\ProductPolicy;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 
@@ -29,7 +29,7 @@ class ProductController extends ApiController
     public function store(Request $request)
     {
         if (! $request->user()->isAdmin) {
-            return redirect()->back();
+            return $this->notAuthorized('unauthorized');
         }
 
         $product = new Product;
@@ -59,6 +59,9 @@ class ProductController extends ApiController
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
+        if (! $request->user()->isAdmin) {
+            return $this->notAuthorized('unauthorized');
+        }
 
         $product->code = $request->input('code');
 
@@ -99,6 +102,10 @@ class ProductController extends ApiController
      */
     public function destroy(Request $request, Product $product)
     {
+        if (! $request->user()->isAdmin) {
+            return $this->notAuthorized('unauthorized');
+        }
+        
         if (! $request->user()->isAdmin) {
             return redirect()->back();
         }

@@ -38,6 +38,7 @@ import CardSnow from '@/components/ui/card/CardSnow.vue';
 import PageSection from '@/components/ui/section/PageSection.vue';
 import SelectImages from '@/components/ui/select/SelectImages.vue';
 import SelectTags from '@/components/ui/select/SelectTags.vue';
+import { useAuthStore } from '@/stores/auth';
 import { useOrdersStore } from '@/stores/orders';
 import { useProductsStore } from '@/stores/products';
 import { computed, ref } from 'vue';
@@ -45,6 +46,17 @@ import { useRouter } from 'vue-router';
 const props = defineProps<{
     id: string,
 }>()
+
+const auth = useAuthStore();
+
+const redirect = () => {
+    if (!auth.loggedIn) {
+        const router = useRouter()
+        router.push({ path: '/' })
+    }
+}
+
+auth.refresh().then(redirect)
 
 const ordiniStore = useOrdersStore();
 ordiniStore.fetch(props.id);

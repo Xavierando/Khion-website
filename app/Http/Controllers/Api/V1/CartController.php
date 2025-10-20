@@ -73,17 +73,4 @@ class CartController extends ApiController
             'cart' => new CartResource($cart),
         ]);
     }
-
-
-    public function delete(Request $request, Product $product)
-    {
-        $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
-        $cart->delete();
-
-        $product->updateAvailableQuantity();
-
-        return $this->ok('success', [
-            'cart' => new CartResource($cart),
-        ]);
-    }
 }

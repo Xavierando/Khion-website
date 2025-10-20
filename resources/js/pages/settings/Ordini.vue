@@ -19,10 +19,22 @@
 
 <script setup lang="ts">
 import PageSection from '@/components/ui/section/PageSection.vue';
+import { useAuthStore } from '@/stores/auth';
 import { useOrdersStore } from '@/stores/orders';
 import { useProductsStore } from '@/stores/products';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+
+const auth = useAuthStore();
+
+const redirect = () => {
+    if (!auth.loggedIn) {
+        const router = useRouter()
+        router.push({ path: '/' })
+    }
+}
+
+auth.refresh().then(redirect)
 
 const ordiniStore = useOrdersStore()
 const router = useRouter()

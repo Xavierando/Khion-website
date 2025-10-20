@@ -16,7 +16,6 @@ class UserController extends ApiController
     //
     public function update(Request $request)
     {
-
         $user = $request->user();
         $responseStatus = 'failed';
 

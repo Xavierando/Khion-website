@@ -96,7 +96,6 @@ export const useAuthStore = defineStore('auth', {
     async refresh() {
       try {
         const response = await axios.get('/api/user')
-
         if (response.status === 200) {
           if (response.data.data === null) {
             const user = useUserStore();
@@ -111,9 +110,10 @@ export const useAuthStore = defineStore('auth', {
             cart.fetchCart();
           }
         }
-
       } catch (e) {
-        return e
+            const user = useUserStore();
+            user.$reset();
+            this.loggedIn = false;
       }
     },
   }
