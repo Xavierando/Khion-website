@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { CartItem, Order } from '@/types'
 import { useProductsStore } from './products'
-import dayjs from 'dayjs'
 
 
 
@@ -62,7 +61,7 @@ interface Orders {
 }
 
 
-export interface Ordine {
+export interface IOrdine {
   id: number;
   status: string;
   statusOptions: string;
@@ -70,13 +69,17 @@ export interface Ordine {
   items: CartItem[];
   setStatus(newStatus: string): Promise<boolean>;
   checkoutUrl(): Promise<string | false>;
-  sortByStatusAndDate(OrdineA: Ordine, OrdineB: Ordine): number;
   delete(): void
   deleteFromServer(): Promise<boolean>
   deleteFromLocalStore(): void
 }
 
-export class Ordine implements Ordine {
+export class Ordine implements IOrdine {
+  id: number;
+  status: string;
+  statusOptions: string;
+  total: number;
+  items: CartItem[];
   constructor(data: Order) {
     this.id = data.id;
     this.status = data.status;
@@ -137,7 +140,8 @@ export class Ordine implements Ordine {
       }
       return false
     } catch (error) {
-      return false
+      console.log(error);
+      return false;
     }
   }
   deleteFromLocalStore() {

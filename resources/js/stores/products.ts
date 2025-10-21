@@ -56,6 +56,7 @@ export const useProductsStore = defineStore('products', {
         return false
       } catch (error) {
         // let the form component display the error
+        console.log(error);
         return false
       }
     }
@@ -95,7 +96,7 @@ interface Products {
   list: Prodotto[],
 }
 
-export interface Prodotto {
+export interface IProdotto {
   id: number;
   name: string;
   code: string;
@@ -113,10 +114,21 @@ export interface Prodotto {
   removeImage(src: string): void;
   setImageAsDefault(src: string): void;
   update(): Promise<boolean>;
-  sortByAvailabilityAndDate(ProdottoA: Prodotto, ProdottoB: Prodotto): number;
 }
 
-export class Prodotto implements Prodotto {
+export class Prodotto implements IProdotto {
+  readonly id;
+  name = '';
+  code = '';
+  description = '';
+  base_price = 0;
+  quantity = 0;
+  base_quantity = 0;
+  images = [] as ImmagineProdotto[];
+  default_images = {} as Image;
+  tags = [] as Tag[];
+  created = '';
+
   constructor(data: Product) {
     this.id = data.id;
     this.name = data.name;
@@ -209,7 +221,7 @@ export class Prodotto implements Prodotto {
 }
 
 
-export interface ImmagineProdotto {
+export interface IImmagineProdotto {
   id: number | string;
   productId: number;
   thumbnail: string;
@@ -223,7 +235,14 @@ export interface ImmagineProdotto {
   delete(): Promise<boolean>;
 }
 
-export class ImmagineProdotto implements ImmagineProdotto {
+export class ImmagineProdotto implements IImmagineProdotto {
+  id: number | string;
+  productId = 0;
+  thumbnail = '';
+  src = '';
+  caption = '';
+  blob?: File;
+  deletable?: boolean;
   constructor(data: Image) {
     this.id = data.id;
     this.thumbnail = data.thumbnail;

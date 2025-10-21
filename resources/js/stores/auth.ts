@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { User } from '@/types/index'
 import axios from 'axios'
 import { useCartStore } from './cart'
 import { useUserStore } from './user'
@@ -14,7 +13,7 @@ export const useAuthStore = defineStore('auth', {
     } as auth
   },
   getters: {
-    user: (state) => {
+    user: () => {
       const user = useUserStore();
       return user;
     },
@@ -76,8 +75,8 @@ export const useAuthStore = defineStore('auth', {
 
         if (response.status === 204 || response.status === 401) {
           this.loggedIn = false;
-            const user = useUserStore();
-            user.$reset();
+          const user = useUserStore();
+          user.$reset();
         }
         this.loggingIn = false;
 
@@ -111,9 +110,10 @@ export const useAuthStore = defineStore('auth', {
           }
         }
       } catch (e) {
-            const user = useUserStore();
-            user.$reset();
-            this.loggedIn = false;
+        console.log(e);
+        const user = useUserStore();
+        user.$reset();
+        this.loggedIn = false;
       }
     },
   }

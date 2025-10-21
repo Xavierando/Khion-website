@@ -5,6 +5,11 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import vuetify from 'vite-plugin-vuetify'
 //import VueDevTools from 'vite-plugin-vue-devtools';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig({
     plugins: [

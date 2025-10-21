@@ -9,7 +9,6 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { useAuthStore } from '@/stores/auth';
-import colors from 'vuetify/util/colors'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 const pinia = createPinia();
