@@ -45,7 +45,7 @@ class UserController extends ApiController
             ]);
 
             $path = Storage::disk('images')->put('pic/', $request->file('pic'));
-            Storage::disk('images')->delete($user->imageUrl);
+            Storage::delete($user->imageUrl);
             $user->update(['imageUrl' => $path]);
             $responseStatus = 'success';
         }

@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
             'isTeam' => true,
             'role' => 'Mastro Artigiano',
         ]);
-        /*
+        
         User::factory(5);
 
         Tag::factory()->create(['tag' => '150cm']);
@@ -82,6 +82,6 @@ class DatabaseSeeder extends Seeder
             ->recycle($user)
             ->recycle($carts)
             ->create();
-        */
+        
     }
 }

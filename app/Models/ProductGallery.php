@@ -22,8 +22,8 @@ class ProductGallery extends Model
         parent::boot();
 
         static::deleted(function ($image) {
-            Storage::disk('images')->delete($image->src);
-            Storage::disk('images')->delete($image->thumbnail);
+            Storage::delete($image->src);
+            Storage::delete($image->thumbnail);
         });
     }
 
@@ -55,7 +55,7 @@ class ProductGallery extends Model
         $temp_file = sys_get_temp_dir().'/tmpImage';
         $image->scaleDown($maxSize, $maxSize)->toJpeg(90)->save($temp_file);
 
-        return Storage::disk('images')->put($path, new File($temp_file));
+        return Storage::put($path, new File($temp_file));
     }
 
     public function setAsDefault()

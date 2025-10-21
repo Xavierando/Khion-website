@@ -28,8 +28,8 @@ class ProductGalleryFactory extends Factory
         $image->scaleDown(1200, 1200)->toJpeg(90)->save($temp_file);
         $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file_thumb);
 
-        $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file_thumb));
-        $path = Storage::disk('images')->put('product/', new File($temp_file));
+        $paththumb = Storage::put('product/thumbnail/', new File($temp_file_thumb));
+        $path = Storage::put('product/', new File($temp_file));
 
         /*
 

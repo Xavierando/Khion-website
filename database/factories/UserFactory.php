@@ -26,8 +26,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $response = Http::get('https://xsgames.co/randomusers/avatar.php?g=male');
-        $path = 'pic/'.Str::random(10).'.png';
-        Storage::disk('images')->put($path, $response->body());
+        $path = 'pic/'.uniqid().'.png';
+        Storage::put($path, $response->body());
 
         return [
             'name' => fake()->name(),
