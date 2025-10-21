@@ -1,39 +1,39 @@
 {
-    "$schema": "https://json.schemastore.org/package.json",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "build": "vite build",
-        "buildDev": "vite build --watch",
-        "dev": "vite",
-        "format" : "prettier -w .",
-        "lint" : "eslint"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.38.0",
-        "@tailwindcss/vite": "^4.0.0",
-        "@types/markdown-it": "^14.1.2",
-        "axios": "^1.11.0",
-        "concurrently": "^9.0.1",
-        "eslint": "^9.38.0",
-        "laravel-vite-plugin": "^2.0.0",
-        "prettier": "^3.6.2",
-        "tailwindcss": "^4.0.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.2"
-    },
-    "dependencies": {
-        "@mdi/font": "^7.4.47",
-        "@vitejs/plugin-vue": "^6.0.1",
-        "clsx": "^2.1.1",
-        "dayjs": "^1.11.18",
-        "pinia": "^3.0.3",
-        "tailwind-merge": "^3.3.1",
-        "vite": "^7.1.9",
-        "vite-plugin-vuetify": "^2.1.2",
-        "vue": "^3.5.22",
-        "vue-markdown-render": "^2.3.0",
-        "vue-router": "^4.5.1",
-        "vuetify": "^3.10.5"
-    }
+  "$schema": "https://json.schemastore.org/package.json",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "buildDev": "vite build --watch",
+    "dev": "vite",
+    "format": "prettier -w .",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/markdown-it": "^14.1.2",
+    "axios": "^1.11.0",
+    "concurrently": "^9.0.1",
+    "eslint": "^9.38.0",
+    "laravel-vite-plugin": "^2.0.0",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.18",
+    "pinia": "^3.0.3",
+    "tailwind-merge": "^3.3.1",
+    "vite": "^7.1.9",
+    "vite-plugin-vuetify": "^2.1.2",
+    "vue": "^3.5.22",
+    "vue-markdown-render": "^2.3.0",
+    "vue-router": "^4.5.1",
+    "vuetify": "^3.10.5"
+  }
 }
