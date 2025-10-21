@@ -40,12 +40,12 @@ class ProductGallery extends Model
 
     public function generateStoragePathForBigImage($sourceImage)
     {
-        return $this->generateStoragePath($sourceImage, 1200, 'product/');
+        return $this->generateStoragePath($sourceImage, 1200, 'product');
     }
 
     public function generateStoragePathForThumbnail($sourceImage)
     {
-        return $this->generateStoragePath($sourceImage, 350, 'product/thumbnail/');
+        return $this->generateStoragePath($sourceImage, 350, 'product/thumbnail');
     }
 
     public function generateStoragePath($sourceImage, $maxSize, $path)
