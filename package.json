@@ -5,7 +5,9 @@
     "scripts": {
         "build": "vite build",
         "buildDev": "vite build --watch",
-        "dev": "vite"
+        "dev": "vite",
+        "format" : "prettier -w .",
+        "lint" : "eslint"
     },
     "devDependencies": {
         "@eslint/js": "^9.38.0",
