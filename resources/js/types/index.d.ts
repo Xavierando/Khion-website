@@ -1,5 +1,5 @@
-import type { LucideIcon } from 'lucide-vue-next';
-import type { Config } from 'ziggy-js';
+import type { LucideIcon } from "lucide-vue-next";
+import type { Config } from "ziggy-js";
 
 export interface Auth {
     user: User;
@@ -18,7 +18,9 @@ export interface NavItem {
     isActive?: boolean;
 }
 
-export type AppPageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
+export type AppPageProps<
+    T extends Record<string, unknown> = Record<string, unknown>,
+> = T & {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
@@ -46,16 +48,13 @@ export interface User {
 export type BreadcrumbItemType = BreadcrumbItem;
 
 export interface ConfOption {
-    name: string,
-    price: integer
+    name: string;
+    price: integer;
 }
 
 export interface Productconfiguration {
     name: string;
-    options:
-    [
-        ConfOption
-    ];
+    options: [ConfOption];
     ref: string;
     type: string;
     option: string;
@@ -84,7 +83,7 @@ export interface Product {
     tags: Tag[];
 }
 export interface Image {
-    id : string | number;
+    id: string | number;
     thumbnail: string;
     src: string;
     caption: string;
@@ -97,7 +96,7 @@ export interface CartItem {
 }
 
 export interface Cart {
-    items: Array<CartItem>
+    items: Array<CartItem>;
 }
 
 export interface ConfigurationItem {

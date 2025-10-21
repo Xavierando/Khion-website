@@ -1,8 +1,19 @@
 <template>
-    <PageSection class="mt-16">
-    </PageSection>
-    <PageSection v-if="prodotto" :navigation-back="() => router.push({ name: 'gestisciProdotti' })" :left-btn="{label:'Salva',click:() => !prodotto || prodotto.update()}">
-        <v-row align="start" justify="space-between" class=" fill-width" no-gutters>
+    <PageSection class="mt-16"> </PageSection>
+    <PageSection
+        v-if="prodotto"
+        :navigation-back="() => router.push({ name: 'gestisciProdotti' })"
+        :left-btn="{
+            label: 'Salva',
+            click: () => !prodotto || prodotto.update(),
+        }"
+    >
+        <v-row
+            align="start"
+            justify="space-between"
+            class="fill-width"
+            no-gutters
+        >
             <v-col cols="12" sm="4" :md="3" class="pa-1">
                 <v-text-field label="Nome" v-model="prodotto.name" />
             </v-col>
@@ -10,7 +21,10 @@
                 <v-text-field label="Codice" v-model="prodotto.code" />
             </v-col>
             <v-col cols="12" sm="2" :md="1" class="pa-1">
-                <v-text-field label="Quantita" v-model="prodotto.base_quantity" />
+                <v-text-field
+                    label="Quantita"
+                    v-model="prodotto.base_quantity"
+                />
             </v-col>
             <v-col cols="12" sm="2" :md="1" class="pa-1">
                 <v-text-field label="Prezzo" v-model="prodotto.base_price" />
@@ -40,7 +54,6 @@
                     <v-tabs-window-item value="two">
                         <ShowProductContainer :prodotto="prodotto" />
                     </v-tabs-window-item>
-
                 </v-tabs-window>
             </v-card-text>
         </v-card>
@@ -48,37 +61,33 @@
 </template>
 
 <script setup lang="ts">
-import ShowProductContainer from '@/components/ShowProductContainer.vue';
-import CardSnow from '@/components/ui/card/CardSnow.vue';
-import PageSection from '@/components/ui/section/PageSection.vue';
-import SelectImages from '@/components/ui/select/SelectImages.vue';
-import SelectTags from '@/components/ui/select/SelectTags.vue';
-import { useAuthStore } from '@/stores/auth';
-import { useProductsStore } from '@/stores/products';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import ShowProductContainer from "@/components/ShowProductContainer.vue";
+import CardSnow from "@/components/ui/card/CardSnow.vue";
+import PageSection from "@/components/ui/section/PageSection.vue";
+import SelectImages from "@/components/ui/select/SelectImages.vue";
+import SelectTags from "@/components/ui/select/SelectTags.vue";
+import { useAuthStore } from "@/stores/auth";
+import { useProductsStore } from "@/stores/products";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 const props = defineProps<{
-    id: string,
-}>()
+    id: string;
+}>();
 
 const auth = useAuthStore();
 
 const redirect = () => {
     if (!auth.user.isAdmin) {
-        const router = useRouter()
-        router.push({ path: '/' })
+        const router = useRouter();
+        router.push({ path: "/" });
     }
-}
+};
 
-auth.refresh().then(redirect)
+auth.refresh().then(redirect);
 
 const router = useRouter();
-const tab = ref('one');
+const tab = ref("one");
 
-
-const prodottiStore = useProductsStore()
+const prodottiStore = useProductsStore();
 const prodotto = computed(() => prodottiStore.findProduct(Number(props.id)));
-
-
-
 </script>

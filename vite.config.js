@@ -1,12 +1,12 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
-import vue from '@vitejs/plugin-vue';
-import path from 'path';
-import vuetify from 'vite-plugin-vuetify'
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
+import vue from "@vitejs/plugin-vue";
+import path from "path";
+import vuetify from "vite-plugin-vuetify";
 //import VueDevTools from 'vite-plugin-vue-devtools';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,7 +19,7 @@ export default defineConfig({
         }),
         */
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: ["resources/css/app.css", "resources/js/app.js"],
             refresh: true,
         }),
         tailwindcss(),
@@ -35,8 +35,8 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './resources/js'),
-            '@images': path.resolve(__dirname, './resources/images'),
+            "@": path.resolve(__dirname, "./resources/js"),
+            "@images": path.resolve(__dirname, "./resources/images"),
         },
     },
 });
