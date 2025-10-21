@@ -23,8 +23,8 @@ class TagController extends ApiController
         $tags = [];
 
         if ($request->has('tag')) {
-            $tags = Tag::where('tag', 'like', '%' . $request->input('tag') . '%')->get();
-        }else{
+            $tags = Tag::where('tag', 'like', '%'.$request->input('tag').'%')->get();
+        } else {
             $tags = Tag::all();
         }
 
@@ -42,7 +42,7 @@ class TagController extends ApiController
         if (! $request->user()->isAdmin) {
             return $this->notAuthorized('unauthorized');
         }
-        
+
         $request->validate([
             'tag' => 'required|string|unique:tags,tag',
         ]);
@@ -50,7 +50,7 @@ class TagController extends ApiController
         $tag = Tag::create([
             'tag' => $request->input('tag'),
         ]);
-    
+
         return $this->ok('success', [
             'tag' => $tag,
         ]);

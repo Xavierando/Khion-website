@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\CartStatus;
 use App\Enums\OrderStatus;
-use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -15,14 +14,14 @@ class CheckoutController extends ApiController
         $cart = $request->user()->pendingCart()->first();
 
         $itemsToDelete = $cart->CartItems()->where('quantity', 0)->get();
-        $itemsToDelete->each(fn($i) => $i->delete());
+        $itemsToDelete->each(fn ($i) => $i->delete());
 
         $items = $cart->CartItems()->with('product')->get();
 
         $order = Order::create([
             'status' => OrderStatus::pending,
             'total' => $items
-                ->reduce(fn($carry, $item) => $carry + $item['quantity'] * $item['product']['base_price']),
+                ->reduce(fn ($carry, $item) => $carry + $item['quantity'] * $item['product']['base_price']),
             'user_id' => $request->user()->id,
             'cart_id' => $cart->id,
         ]);
@@ -44,6 +43,7 @@ class CheckoutController extends ApiController
         if ($request->user()->id !== $order->user->id) {
             return $this->notAuthorized('unauthorized');
         }
+
         return $this->ok('success', ['url' => $order->checkoutUrl()]);
     }
 }

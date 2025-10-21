@@ -18,7 +18,7 @@ class RegisterUserRequest extends FormRequest
             'email' => 'required|string|lowercase|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
             // Language is now required and must be one of the configured languages
-            'language' => 'required|string|in:' . implode(',', array_keys(config('language', []))),
+            'language' => 'required|string|in:'.implode(',', array_keys(config('language', []))),
         ];
     }
 

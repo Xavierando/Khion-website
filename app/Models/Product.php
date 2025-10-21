@@ -22,7 +22,7 @@ class Product extends Model
         parent::boot();
 
         static::deleted(function ($product) {
-            $product->productGallery->map(fn($v) => $v->delete());
+            $product->productGallery->map(fn ($v) => $v->delete());
         });
     }
 
@@ -50,9 +50,10 @@ class Product extends Model
 
     public function defaultImage()
     {
-        if($this->productGallery()->where('default',true)->count() > 0){
-            return $this->productGallery()->where('default',true)->first();
+        if ($this->productGallery()->where('default', true)->count() > 0) {
+            return $this->productGallery()->where('default', true)->first();
         }
+
         return $this->productGallery()->first();
     }
 
@@ -110,11 +111,11 @@ class Product extends Model
 
         $this->stripe_price_id = $price['id'];
 
-
         return $price['id'];
     }
 
-    public function resetDefaultImage(){
+    public function resetDefaultImage()
+    {
         $this->productGallery()->update(['default' => false]);
     }
 }

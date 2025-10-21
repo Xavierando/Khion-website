@@ -29,21 +29,23 @@ class OrderController extends ApiController
         $order->checkPayementStatus();
         if ($request->user()->isAdmin) {
             return $this->ok('success', ['order' => new OrderResource($order)]);
-        } else if ($order->user->id = $request->user()->id) {
+        } elseif ($order->user->id = $request->user()->id) {
             return $this->ok('success', ['order' => new OrderResource($order)]);
         }
+
         return $this->notAuthorized('unauthorized');
     }
 
     public function update(Request $request, Order $order)
     {
         $request->validate([
-            'status' => [new isOrderStatus]
+            'status' => [new isOrderStatus],
         ]);
 
         if ($request->user->isAdmin) {
             $status = $request->enum('status', OrderStatus::class);
             $order->statusUpdate($status);
+
             return $this->ok('success', ['order' => new OrderResource($order)]);
         }
 

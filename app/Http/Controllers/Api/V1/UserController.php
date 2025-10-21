@@ -7,12 +7,11 @@ use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class UserController extends ApiController
 {
     use ApiResponses;
+
     //
     public function update(Request $request)
     {

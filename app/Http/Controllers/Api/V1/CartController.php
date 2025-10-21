@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Resources\CartResource;
-use App\Http\Resources\ProductResource;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
 
 class CartController extends ApiController
 {
@@ -33,7 +30,7 @@ class CartController extends ApiController
         ]);
         $cart = $request->user()->pendingCart()->with(['CartItems'])->first();
         $product = Product::find($validated['product']);
-        $item = $cart->CartItems->first(fn($v) => $v['product_id'] == $product->id);
+        $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
 
         if ($request->has('delete')) {
             $item->delete();
@@ -51,7 +48,7 @@ class CartController extends ApiController
                 }
             } else {
                 if ($validated['quantity'] <= $product->available_quantity) {
-                    $item = $cart->CartItems->first(fn($v) => $v['product_id'] == $product->id);
+                    $item = $cart->CartItems->first(fn ($v) => $v['product_id'] == $product->id);
                     if ($item == null) {
                         CartItem::create([
                             'cart_id' => $cart->id,

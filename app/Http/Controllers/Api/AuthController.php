@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     use ApiResponses;
+
     //
     public function show(Request $request)
     {
@@ -17,6 +18,6 @@ class AuthController extends Controller
 
         dd($user);
 
-        return $this->ok('success',['user' => ($user) ? new UserResource($user) : null]);
+        return $this->ok('success', ['user' => ($user) ? new UserResource($user) : null]);
     }
 }

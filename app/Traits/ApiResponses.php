@@ -4,12 +4,12 @@ namespace App\Traits;
 
 trait ApiResponses
 {
-    protected function ok(string $message, Array $data = [])
+    protected function ok(string $message, array $data = [])
     {
         return $this->success($message, $data, 200);
     }
 
-    protected function success(string $message, Array $data = [], int $statusCode = 200)
+    protected function success(string $message, array $data = [], int $statusCode = 200)
     {
         return response()->json([
             'data' => $data,
@@ -18,7 +18,7 @@ trait ApiResponses
         ], 200);
     }
 
-    protected function error(string | Array $errors = [], int $statusCode = 200)
+    protected function error(string|array $errors = [], int $statusCode = 200)
     {
         if (is_string($errors)) {
             return response()->json([
@@ -34,6 +34,6 @@ trait ApiResponses
 
     protected function notAuthorized(string $message)
     {
-        return $this->error($message,401);
+        return $this->error($message, 401);
     }
 }

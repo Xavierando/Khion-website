@@ -6,7 +6,6 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Tag;
-use App\Policies\ProductPolicy;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 
@@ -20,6 +19,7 @@ class ProductController extends ApiController
     public function index()
     {
         $products = ProductResource::collection(Product::all());
+
         return $this->ok('success', ['products' => ProductResource::collection($products)]);
     }
 
@@ -79,7 +79,6 @@ class ProductController extends ApiController
         $product->quantity = $request->input('quantity');
         $product->updateAvailableQuantity();
 
-
         $product->tags()->detach();
         if ($request->has('tags')) {
             foreach ($request->input('tags') as $tag) {
@@ -93,7 +92,7 @@ class ProductController extends ApiController
         $product->save();
 
         return $this->ok('success', [
-            'product' => new ProductResource($product)
+            'product' => new ProductResource($product),
         ]);
     }
 
@@ -105,12 +104,13 @@ class ProductController extends ApiController
         if (! $request->user()->isAdmin) {
             return $this->notAuthorized('unauthorized');
         }
-        
+
         if (! $request->user()->isAdmin) {
             return redirect()->back();
         }
 
         $product->delete();
+
         return $this->ok('deleted');
     }
 }

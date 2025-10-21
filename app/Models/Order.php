@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
-use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,7 +46,7 @@ class Order extends Model
     public function statusUpdate(OrderStatus $status)
     {
         Log::debug($this->statusOptions());
-        if (array_find($this->statusOptions(), fn($v) => $v == $status)) {
+        if (array_find($this->statusOptions(), fn ($v) => $v == $status)) {
             $this->status = $status;
             $this->save();
         }
@@ -66,6 +65,7 @@ class Order extends Model
                 $checkoutSession = $this->createCheckoutSession();
                 $this->stripe_checkout_id = $checkoutSession->id;
                 $this->save();
+
                 return $checkoutSession->url;
             }
         }
@@ -81,8 +81,8 @@ class Order extends Model
             ];
         })->toArray();
         $checkoutSession = $this->user->checkout($checkout, [
-            'success_url' => env('APP_URL') . '/checkout/' . $this->id,
-            'cancel_url' =>  env('APP_URL') . '/checkout/' . $this->id,
+            'success_url' => env('APP_URL').'/checkout/'.$this->id,
+            'cancel_url' => env('APP_URL').'/checkout/'.$this->id,
             'metadata' => ['order_id' => $this->id],
         ]);
 
@@ -92,7 +92,7 @@ class Order extends Model
     public function checkPayementStatus()
     {
         if ($this->status === OrderStatus::pending) {
-            $checkoutSession =  $this->checkoutSession();
+            $checkoutSession = $this->checkoutSession();
             if ($checkoutSession) {
                 if ($checkoutSession->payment_status === 'paid') {
                     $this->statusUpdate(OrderStatus::paid);

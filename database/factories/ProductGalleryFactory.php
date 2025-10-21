@@ -21,20 +21,21 @@ class ProductGalleryFactory extends Factory
     public function definition(): array
     {
 
-            $manager = new ImageManager(new Driver);
-            $image = $manager->read( new File(public_path('images/snowboard1.jpg')));
-            $temp_file_thumb = sys_get_temp_dir().'/thumbnail';
-            $temp_file = sys_get_temp_dir().'/img';
-            $image->scaleDown(1200, 1200)->toJpeg(90)->save($temp_file);
-            $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file_thumb);
+        $manager = new ImageManager(new Driver);
+        $image = $manager->read(new File(public_path('images/snowboard1.jpg')));
+        $temp_file_thumb = sys_get_temp_dir().'/thumbnail';
+        $temp_file = sys_get_temp_dir().'/img';
+        $image->scaleDown(1200, 1200)->toJpeg(90)->save($temp_file);
+        $image->scaleDown(350, 350)->toJpeg(90)->save($temp_file_thumb);
 
-            $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file_thumb));
-            $path = Storage::disk('images')->put('product/', new File($temp_file));
-/*
+        $paththumb = Storage::disk('images')->put('product/thumbnail/', new File($temp_file_thumb));
+        $path = Storage::disk('images')->put('product/', new File($temp_file));
 
-        $paththumb = Storage::disk('images')->put('product/thumbnail', new File(public_path('images/snowboard1.png')));
-        $path = Storage::disk('images')->put('product/', new File(public_path('images/snowboard1.png')));
-*/
+        /*
+
+                $paththumb = Storage::disk('images')->put('product/thumbnail', new File(public_path('images/snowboard1.png')));
+                $path = Storage::disk('images')->put('product/', new File(public_path('images/snowboard1.png')));
+        */
         return [
             'thumbnail' => $paththumb,
             'src' => $path,

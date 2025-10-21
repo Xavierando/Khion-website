@@ -1,15 +1,16 @@
 <?php
+
 namespace App\Http\Responses\Fortify;
 
 use App\Http\Resources\UserResource;
 use App\Traits\ApiResponses;
-use Illuminate\Http\JsonResponse;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
+use Laravel\Fortify\Fortify;
 
 class RegisterResponse implements RegisterResponseContract
 {
     use ApiResponses;
+
     /**
      * Create an HTTP response that represents the object.
      *

@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
-use Illuminate\Http\File;
 
 class ProductGallery extends Model
 {
@@ -52,8 +52,9 @@ class ProductGallery extends Model
     {
         $manager = new ImageManager(new Driver);
         $image = $manager->read($sourceImage);
-        $temp_file = sys_get_temp_dir() . '/tmpImage';
+        $temp_file = sys_get_temp_dir().'/tmpImage';
         $image->scaleDown($maxSize, $maxSize)->toJpeg(90)->save($temp_file);
+
         return Storage::disk('images')->put($path, new File($temp_file));
     }
 

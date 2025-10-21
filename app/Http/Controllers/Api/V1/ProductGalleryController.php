@@ -12,7 +12,6 @@ class ProductGalleryController extends Controller
 {
     use ApiResponses;
 
-
     /**
      * Store a newly created resource in storage.
      */
@@ -26,12 +25,12 @@ class ProductGalleryController extends Controller
             'file' => 'required|file',
         ]);
 
-        $image = new ProductGallery();
+        $image = new ProductGallery;
         $image->product_id = $product->id;
         $image->generateStoragePathForUpload($request->File('file'));
         $image->save();
 
-        return $this->ok("success",['id' => $image->id]);
+        return $this->ok('success', ['id' => $image->id]);
     }
 
     /**
@@ -45,7 +44,8 @@ class ProductGalleryController extends Controller
         }
 
         $productGallery->setAsDefault();
-        return $this->ok("success");
+
+        return $this->ok('success');
     }
 
     /**
@@ -57,8 +57,9 @@ class ProductGalleryController extends Controller
         if (! $request->user()->isAdmin) {
             return $this->notAuthorized('unauthorized');
         }
-        
+
         $productGallery->delete();
-        return $this->ok("success");
+
+        return $this->ok('success');
     }
 }

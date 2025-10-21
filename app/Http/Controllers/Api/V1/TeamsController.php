@@ -9,12 +9,14 @@ use App\Traits\ApiResponses;
 class TeamsController extends ApiController
 {
     use ApiResponses;
+
     /**
      * return a list of teams members
      */
     public function index()
     {
         $teams = TeamResource::collection(User::where('isTeam', '=', '1')->get());
-        return $this->ok('success',['teamsMembers' => $teams]);
+
+        return $this->ok('success', ['teamsMembers' => $teams]);
     }
 }
